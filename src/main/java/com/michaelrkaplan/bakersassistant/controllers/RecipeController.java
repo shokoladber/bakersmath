@@ -1,15 +1,27 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
+import com.michaelrkaplan.bakersassistant.models.Recipe;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import com.michaelrkaplan.bakersassistant.services.RecipeService;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/recipes")
 public class RecipeController {
+
+    private final RecipeService recipeService;
+
+    @Autowired
+    public RecipeController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
 
     @GetMapping("/index")
     public String showRecipeIndex(Model model) {
@@ -41,4 +53,22 @@ public class RecipeController {
 
         return "recipes/details";
     }
+
+    @GetMapping("/add")
+    public String showAddRecipeForm(Model model) {
+        // You can add any model attributes needed by the Thymeleaf template
+        model.addAttribute("recipe", new Recipe());
+
+        return "recipes/add";
+    }
+
+    @PostMapping("/recipes/add")
+     public String submitAddRecipeForm(@ModelAttribute Recipe recipe, Model model) {
+        // Assuming RecipeService has a method to save the recipe
+        recipeService.saveRecipe(recipe);
+
+        // Redirect to the recipe index page or another appropriate view
+        return "redirect:/recipes";
+     }
+
 }

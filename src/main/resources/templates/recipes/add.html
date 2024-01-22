@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-
-<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"/>
-    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe</title>
+    <!-- Include any additional CSS or styling links here -->
 </head>
 <body>
+
+<h2>Add Recipe</h2>
+
+<form th:action="@{recipes/add}" method="post">
+    <!-- Recipe Name -->
+    <label for="recipeName">Recipe Name:</label>
+    <input type="text" id="recipeName" name="recipeName" th:required="required">
+
+    <!-- Ingredients -->
+    <label for="ingredients">Ingredients:</label>
+    <textarea id="ingredients" name="ingredients" th:required="required"></textarea>
+
+    <!-- Instructions -->
+    <label for="instructions">Instructions:</label>
+    <textarea id="instructions" name="instructions" th:required="required"></textarea>
+
+    <!-- Additional fields can be added based on your requirements -->
+
+    <br>
+
+    <!-- Submit Button -->
+    <button type="submit">Add Recipe</button>
+</form>
+
+<!-- Include any additional scripts or JavaScript links here -->
 
 </body>
 </html>

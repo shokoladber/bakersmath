@@ -1,7 +1,43 @@
 package com.michaelrkaplan.bakersassistant.models;
 
-public class Ingredient {
+class Ingredient {
     private String name;
-    private double quantity;
+    private int quantity;
     private String unit;
+
+    // Constructors, getters, and setters
+
+    public Ingredient() {
+        // Default constructor
+    }
+
+    public Ingredient(String name, int quantity, String unit) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 }
