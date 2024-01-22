@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/recipes")
 public class RecipeController {
 
-    @GetMapping("/index-recipes")
+    @GetMapping("/index")
     public String showRecipeIndex(Model model) {
         // Logic to retrieve a list of recipes from your data source
         // For simplicity, let's assume we have a service that provides the data
@@ -22,7 +22,7 @@ public class RecipeController {
         // Replace this with your actual data
         model.addAttribute("recipeNames", List.of("Recipe 1", "Recipe 2", "Recipe 3"));
 
-        return "recipes/index-recipes";
+        return "recipes/index";
     }
 
     // Example method for displaying an individual recipe page
@@ -39,6 +39,6 @@ public class RecipeController {
         model.addAttribute("ingredients", List.of("Ingredient 1", "Ingredient 2", "Ingredient 3"));
         model.addAttribute("instructions", List.of("Step 1: Instruction 1", "Step 2: Instruction 2", "Step 3: Instruction 3"));
 
-        return "recipe/details";
+        return "recipes/details";
     }
 }

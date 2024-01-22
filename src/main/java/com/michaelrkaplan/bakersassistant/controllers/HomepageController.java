@@ -12,7 +12,7 @@ public class HomepageController {
     @GetMapping()
     public String showHomepage(Model model) {
 
-        model.addAttribute("homepageTitle", "Baker's Assistant");
+        model.addAttribute("homepageTitle", "Baker's Math");
 
         return "homepage";
     }
