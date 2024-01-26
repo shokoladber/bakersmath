@@ -1,10 +1,10 @@
 package com.michaelrkaplan.bakersassistant.repositories;
 
-import com.michaelrkaplan.bakersassistant.models.Recipe;
+import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
 }

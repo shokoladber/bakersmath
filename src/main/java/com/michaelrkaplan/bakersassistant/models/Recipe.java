@@ -1,17 +1,23 @@
 package com.michaelrkaplan.bakersassistant.models;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
 public class Recipe {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
     private String instructions;
 
-    // Constructors, getters, and setters
-
-    public Recipe() {
-        // Default constructor
-    }
+    public Recipe() {}
 
     public Recipe(String name, List<Ingredient> ingredients, String instructions) {
         this.name = name;

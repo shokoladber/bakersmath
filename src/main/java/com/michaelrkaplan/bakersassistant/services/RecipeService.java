@@ -1,5 +1,6 @@
 package com.michaelrkaplan.bakersassistant.services;
 
+import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import com.michaelrkaplan.bakersassistant.repositories.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,16 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
+    private final IngredientService ingredientService;
+
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository) {
+    public RecipeService(RecipeRepository recipeRepository, IngredientService ingredientService) {
         this.recipeRepository = recipeRepository;
+        this.ingredientService = ingredientService;
     }
 
     public void saveRecipe(Recipe recipe) {
-        // You can add any additional logic here before saving, if needed
+
         recipeRepository.save(recipe);
     }
 
@@ -32,12 +36,15 @@ public class RecipeService {
     }
 
     public Recipe createRecipe(Recipe recipe) {
-        // Additional logic, validation, or processing can be added here
+
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            ingredientService.saveIngredient(ingredient);
+        }
+
         return recipeRepository.save(recipe);
     }
 
     public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
-        // Additional logic, validation, or processing can be added here
         return recipeRepository.findById(id)
                 .map(existingRecipe -> {
                     // Update fields of existingRecipe with data from updatedRecipe

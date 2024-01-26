@@ -1,15 +1,22 @@
 package com.michaelrkaplan.bakersassistant.models;
 
-class Ingredient {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
+public class Ingredient {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private int quantity;
     private String unit;
 
-    // Constructors, getters, and setters
-
-    public Ingredient() {
-        // Default constructor
-    }
+    public Ingredient() {}
 
     public Ingredient(String name, int quantity, String unit) {
         this.name = name;
