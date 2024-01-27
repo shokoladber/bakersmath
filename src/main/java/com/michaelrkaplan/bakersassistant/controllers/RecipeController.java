@@ -25,15 +25,11 @@ public class RecipeController {
 
     @GetMapping("/index")
     public String showRecipeIndex(Model model) {
-        // Logic to retrieve a list of recipes from your data source
-        // For simplicity, let's assume we have a service that provides the data
-        // Replace this with your actual service call
-        // List<Recipe> recipes = recipeService.getAllRecipes();
+        // Retrieve a list of recipes from your data source
+        List<Recipe> recipes = recipeService.getAllRecipes();
 
-        // For demonstration purposes, create a sample list of recipe names
-        // Replace this with your actual data
-        model.addAttribute("recipeNames", List.of("Recipe 1", "Recipe 2", "Recipe 3"));
-
+        // Pass the list of recipes to the Thymeleaf template
+        model.addAttribute("recipes", recipes);
         return "recipes/index";
     }
 

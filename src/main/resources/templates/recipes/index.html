@@ -10,11 +10,11 @@
 <h1>Recipes</h1>
 
 <ul>
-    <!-- Example list of recipes (replace with your actual data) -->
-    <li><a th:href="@{/recipes/1}">Recipe 1</a></li>
-    <li><a th:href="@{/recipes/2}">Recipe 2</a></li>
-    <li><a th:href="@{/recipes/3}">Recipe 3</a></li>
-    <!-- Add more items as needed -->
+    <!-- Iterate over the list of recipes and display each one -->
+    <li th:each="recipe : ${recipes}">
+        <!-- Assuming 'recipe' is the name of the variable in the model -->
+        <a th:href="@{/recipes/{id}(id=${recipe.getId})}" th:text="${recipe.getName}"></a>
+    </li>
 </ul>
 
 </body>

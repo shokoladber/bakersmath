@@ -7,19 +7,16 @@
 </head>
 <body>
 
-<h1>Recipe Details</h1>
+<h1 th:text="${recipeName}">Recipe Name</h1>
 
-<!-- Replace "Recipe Name" with the actual name of the recipe -->
-<h2 th:text="${recipeName}">Recipe Name</h2>
-
-<h3>Ingredients</h3>
+<h2>Ingredients</h2>
 <ul>
     <!-- Example list of ingredients (replace with your actual data) -->
     <li th:each="ingredient : ${ingredients}" th:text="${ingredient}">Ingredient 1</li>
     <!-- Add more items as needed -->
 </ul>
 
-<h3>Instructions</h3>
+<h2>Instructions</h2>
 <ol>
     <!-- Example list of instructions (replace with your actual data) -->
     <li th:each="instruction : ${instructions}" th:text="${instruction}">Step 1: Instruction 1</li>
