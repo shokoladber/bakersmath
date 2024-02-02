@@ -1,63 +1,57 @@
 let ingredientIndex = 1;
 
 function removeIngredient(button) {
-    // Get the specific div containing the ingredient fields
     let ingredientDiv = button.closest('.ingredient');
 
-    // Check if the ingredientDiv is found
     if (ingredientDiv) {
-        // Remove the ingredientDiv from the container
         ingredientDiv.remove();
     }
 }
 
+function addIngredient() {
+    let ingredientsContainer = document.getElementById('ingredientsContainer');
 
-    function addIngredient() {
-        let ingredientsContainer = document.getElementById('ingredientsContainer');
+    let newIngredientDiv = document.createElement('div');
+    newIngredientDiv.className = 'ingredient';
 
-        let newIngredientDiv = document.createElement('div');
-        newIngredientDiv.className = 'ingredient';
+    let inputName = createInputElement('text', 'ingredients[' + ingredientIndex + '].name', 'Ingredient Name', true);
+    let inputQuantity = createInputElement('number', 'ingredients[' + ingredientIndex + '].quantity', 'Quantity', true);
+    let inputUnit = createInputElement('text', 'ingredients[' + ingredientIndex + '].unit', 'Unit', true);
 
-        let inputName = document.createElement('input');
-        inputName.type = 'text';
-        inputName.name = 'ingredients[' + ingredientIndex + '].name';
-        inputName.placeholder = 'Ingredient Name';
-        inputName.required = true;
+    let removeButton = createButton('button', 'Remove Ingredient', function () {
+        removeIngredient(this);
+    });
 
-        let inputQuantity = document.createElement('input');
-        inputQuantity.type = 'number';
-        inputQuantity.name = 'ingredients[' + ingredientIndex + '].quantity';
-        inputQuantity.placeholder = 'Quantity';
-        inputQuantity.required = true;
+    newIngredientDiv.appendChild(inputName);
+    newIngredientDiv.appendChild(inputQuantity);
+    newIngredientDiv.appendChild(inputUnit);
+    newIngredientDiv.appendChild(removeButton);
 
-        let inputUnit = document.createElement('input');
-        inputUnit.type = 'text';
-        inputUnit.name = 'ingredients[' + ingredientIndex + '].unit';
-        inputUnit.placeholder = 'Unit';
-        inputUnit.required = true;
+    ingredientsContainer.appendChild(newIngredientDiv);
 
-        let addButton = document.createElement('button');
-        addButton.type = 'button';
-        addButton.textContent = 'Add Ingredient';
-        addButton.onclick = function () {
-            addIngredient();
-        };
+    // Clear input values for the next ingredient
+    inputName.value = '';
+    inputQuantity.value = '';
+    inputUnit.value = '';
 
-        let removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.textContent = 'Remove Ingredient';
-        removeButton.onclick = function () {
-            removeIngredient(this);
-        };
+    ingredientIndex++;
+}
 
-        newIngredientDiv.appendChild(inputName);
-        newIngredientDiv.appendChild(inputQuantity);
-        newIngredientDiv.appendChild(inputUnit);
-        newIngredientDiv.appendChild(addButton);
-        newIngredientDiv.appendChild(removeButton);
+function createInputElement(type, name, placeholder, required) {
+    let inputElement = document.createElement('input');
+    inputElement.type = type;
+    inputElement.name = name;
+    inputElement.placeholder = placeholder;
+    inputElement.required = required;
+    return inputElement;
+}
 
-        ingredientsContainer.appendChild(newIngredientDiv);
+function createButton(type, textContent, clickHandler) {
+    let button = document.createElement('button');
+    button.type = type;
+    button.textContent = textContent;
+    button.onclick = clickHandler;
+    return button;
+}
 
-        ingredientIndex++;
-    }
     

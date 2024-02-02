@@ -3,8 +3,10 @@ package com.michaelrkaplan.bakersassistant.services;
 import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import com.michaelrkaplan.bakersassistant.repositories.RecipeRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,15 +37,19 @@ public class RecipeService {
         return recipeRepository.findById(id);
     }
 
-    public Recipe createRecipe(Recipe recipe) {
+    @Transactional
+    public Recipe createRecipe(@NotNull Recipe recipe) {
 
         for (Ingredient ingredient : recipe.getIngredients()) {
             ingredientService.saveIngredient(ingredient);
         }
 
+
+
         return recipeRepository.save(recipe);
     }
 
+    @Transactional
     public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
         return recipeRepository.findById(id)
                 .map(existingRecipe -> {

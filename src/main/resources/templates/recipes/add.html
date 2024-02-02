@@ -11,27 +11,26 @@
 
 <h2>Add Recipe</h2>
 
-<form th:action="@{recipes/add}" method="post">
+<form th:action="@{recipes/add}" method="post" th:object="${recipe}">
     <!-- Recipe Name -->
     <label for="recipeName">Recipe Name:</label>
-    <input type="text" id="recipeName" name="recipeName" th:required="required">
+    <input type="text" id="recipeName" name="recipeName" th:field="${recipe.name}" th:required="required">
 
     <!-- Ingredients -->
-    <div id="ingredientsContainer">
+    <div id="ingredientsContainer" >
         <label>Ingredients:</label>
-        <div class="ingredient">
-            <input type="text" name="ingredients[0].name" placeholder="Ingredient Name" required>
-            <input type="number" name="ingredients[0].quantity" placeholder="Quantity" required>
-            <input type="text" name="ingredients[0].unit" placeholder="Unit" required>
-            <button type="button" onclick="addIngredient()">Add Ingredient</button>
+        <br>
+        <button type="button" onclick="addIngredient()">Add Ingredient</button>
+        <div class="ingredient" th:each="ingredient, status : ${recipe.ingredients}">
+            <input type="text" th:field="*{ingredients[__${status.index}__].name}" placeholder="Ingredient Name" required>
+            <input type="number" th:field="*{ingredients[__${status.index}__].quantity}" placeholder="Quantity" required>
+            <input type="text" th:field="*{ingredients[__${status.index}__].unit}" placeholder="Unit" required>
         </div>
     </div>
 
-
-
-
     <!-- Instructions -->
     <label for="instructions">Instructions:</label>
+    <br>
     <textarea id="instructions" name="instructions" th:required="required"></textarea>
 
     <!-- Additional fields can be added based on your requirements -->
@@ -41,6 +40,7 @@
     <!-- Submit Button -->
     <button type="submit">Add Recipe</button>
 </form>
+
 
 <!-- Include any additional scripts or JavaScript links here -->
 

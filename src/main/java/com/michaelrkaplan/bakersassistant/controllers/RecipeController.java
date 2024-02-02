@@ -1,5 +1,6 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
+import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.michaelrkaplan.bakersassistant.services.RecipeService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -52,7 +54,9 @@ public class RecipeController {
 
     @GetMapping("/add")
     public String showAddRecipeForm(Model model) {
-        // You can add any model attributes needed by the Thymeleaf template
+        // Create a new Recipe object and add it to the model
+        Recipe recipe = new Recipe();
+        recipe.setIngredients(new ArrayList<>()); // Initialize the ingredients list
         model.addAttribute("recipe", new Recipe());
 
         return "recipes/add";
@@ -64,7 +68,7 @@ public class RecipeController {
         recipeService.saveRecipe(recipe);
 
         // Redirect to the recipe index page or another appropriate view
-        return "redirect:/recipes";
+        return "redirect:/recipes/index";
      }
 
 }
