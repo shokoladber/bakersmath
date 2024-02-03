@@ -71,4 +71,8 @@ public class RecipeService {
         }
         return false;
     }
+
+    public Optional<Recipe> getRecipeByName(String recipeName) {
+        return recipeRepository.findByName(recipeName);
+    }
 }

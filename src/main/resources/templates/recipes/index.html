@@ -13,7 +13,7 @@
     <!-- Iterate over the list of recipes and display each one -->
     <li th:each="recipe : ${recipes}">
         <!-- Assuming 'recipe' is the name of the variable in the model -->
-        <a th:href="@{/recipes/{id}(id=${recipe.getId})}" th:text="${recipe.getName}"></a>
+        <a th:href="@{/recipes/{recipeName}(recipeName=${recipe.getName})}" th:text="${recipe.getName}"></a>
     </li>
 </ul>
 

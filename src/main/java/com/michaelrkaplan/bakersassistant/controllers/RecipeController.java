@@ -5,14 +5,14 @@ import com.michaelrkaplan.bakersassistant.models.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.michaelrkaplan.bakersassistant.services.RecipeService;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/recipes")
@@ -35,21 +35,22 @@ public class RecipeController {
         return "recipes/index";
     }
 
-    // Example method for displaying an individual recipe page
+    // Display an individual recipe page
     @GetMapping("/{recipeName}")
-    public String showRecipeDetails(Model model) {
-        // Logic to retrieve the details of a specific recipe from your data source
-        // For simplicity, let's assume we have a service that provides the data
-        // Replace this with your actual service call
-        // Recipe recipe = recipeService.getRecipeByName(recipeName);
+    public String showRecipeDetails(@PathVariable String recipeName, Model model) {
 
-        // For demonstration purposes, create a sample recipe
-        // Replace this with your actual data
-        model.addAttribute("recipeName", "Recipe Name");
-        model.addAttribute("ingredients", List.of("Ingredient 1", "Ingredient 2", "Ingredient 3"));
-        model.addAttribute("instructions", List.of("Step 1: Instruction 1", "Step 2: Instruction 2", "Step 3: Instruction 3"));
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
 
-        return "recipes/details";
+        if (!optionalRecipe.isPresent()) {
+            return "redirect:/recipes/index";
+        } else {
+            Recipe recipe = optionalRecipe.get();
+            model.addAttribute("recipeName", recipe.getName());
+            model.addAttribute("ingredients", recipe.getIngredients());
+            model.addAttribute("instructions", recipe.getInstructions());
+        }
+
+        return "recipes/selected-recipe";
     }
 
     @GetMapping("/add")
