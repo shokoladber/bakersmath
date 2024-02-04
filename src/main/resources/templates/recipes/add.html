@@ -24,7 +24,11 @@
         <div class="ingredient" th:each="ingredient, status : ${recipe.ingredients}">
             <input type="text" th:field="*{ingredients[__${status.index}__].name}" placeholder="Ingredient Name" required>
             <input type="number" th:field="*{ingredients[__${status.index}__].quantity}" placeholder="Quantity" required>
-            <input type="text" th:field="*{ingredients[__${status.index}__].unit}" placeholder="Unit" required>
+            <select th:field="*{ingredients[__${status.index}__].unit}" required>
+                <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+                        th:value="${unit.toUpperCase()}" th:text="${unit}">
+                </option>
+            </select>
         </div>
     </div>
 

@@ -1,18 +1,14 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
-import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.michaelrkaplan.bakersassistant.services.RecipeService;
-
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/recipes")

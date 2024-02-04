@@ -1,9 +1,6 @@
 package com.michaelrkaplan.bakersassistant.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Ingredient {
@@ -14,11 +11,13 @@ public class Ingredient {
 
     private String name;
     private int quantity;
-    private String unit;
+
+    @Enumerated(EnumType.STRING)
+    private UnitType unit;
 
     public Ingredient() {}
 
-    public Ingredient(String name, int quantity, String unit) {
+    public Ingredient(String name, int quantity, UnitType unit) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
@@ -40,11 +39,11 @@ public class Ingredient {
         this.quantity = quantity;
     }
 
-    public String getUnit() {
+    public UnitType getUnit() {
         return unit;
     }
 
-    public void setUnit(String unit) {
+    public void setUnit(UnitType unit) {
         this.unit = unit;
     }
 }
