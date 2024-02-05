@@ -11,11 +11,11 @@
 
 <h2>Add Recipe</h2>
 
-<form th:action="@{recipes/add}" method="post" th:object="${recipe}">
+<form th:action="@{/recipes/add}" method="post" th:object="${recipe}">
     <!-- Recipe Name -->
     <label for="recipeName">Recipe Name:</label>
     <input type="text" id="recipeName" name="recipeName" th:field="${recipe.name}" th:required="required">
-
+    <span th:if="${recipeNameError}" class="error" th:text="${recipeNameError}"></span>
     <!-- Ingredients -->
     <div id="ingredientsContainer" >
         <label>Ingredients:</label>
@@ -26,7 +26,7 @@
             <input type="number" th:field="*{ingredients[__${status.index}__].quantity}" placeholder="Quantity" required>
             <select th:field="*{ingredients[__${status.index}__].unit}" required>
                 <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
-                        th:value="${unit.toUpperCase()}" th:text="${unit}">
+                        th:value="${unit.toLowerCase()}" th:text="${unit}">
                 </option>
             </select>
         </div>
@@ -36,8 +36,6 @@
     <label for="instructions">Instructions:</label>
     <br>
     <textarea id="instructions" name="instructions" th:required="required"></textarea>
-
-    <!-- Additional fields can be added based on your requirements -->
 
     <br>
 

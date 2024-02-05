@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Optional<Recipe> findByName(String recipeName);
+
+    boolean existsByNameIgnoreCase(String recipeName);
+
 }

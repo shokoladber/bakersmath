@@ -17,7 +17,7 @@ function addIngredient() {
 
     let inputName = createInputElement('text', 'ingredients[' + ingredientIndex + '].name', 'Ingredient Name', true);
     let inputQuantity = createInputElement('number', 'ingredients[' + ingredientIndex + '].quantity', 'Quantity', true);
-    let selectUnit = createSelectElement('ingredients[' + ingredientIndex + '].unit', 'Unit', true, ['GRAMS', 'OUNCES', 'MILLILITERS', 'LITERS', 'CUPS', 'TEASPOONS', 'TABLESPOONS', 'PINTS', 'QUARTS', 'GALLONS', 'POUNDS']);
+    let selectUnit = createSelectElement('ingredients[' + ingredientIndex + '].unit', 'Unit', true, ['grams', 'ounces', 'milliliters', 'liters', 'cups', 'teaspoons', 'tablespoons', 'pints', 'quarts', 'gallons', 'pounds']);
     let removeButton = createButton('button', 'Remove Ingredient', function () {
         removeIngredient(this);
     });

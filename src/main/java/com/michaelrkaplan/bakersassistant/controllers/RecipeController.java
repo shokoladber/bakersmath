@@ -1,6 +1,7 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
 import com.michaelrkaplan.bakersassistant.models.Recipe;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,14 +60,27 @@ public class RecipeController {
         return "recipes/add";
     }
 
-    @PostMapping("/recipes/add")
-     public String submitAddRecipeForm(@ModelAttribute Recipe recipe, Model model) {
-        // Assuming RecipeService has a method to save the recipe
+    @PostMapping("/add")
+    public String submitAddRecipeForm(@ModelAttribute @Valid Recipe recipe, Model model) {
+        // Validate the form fields using the @Valid annotation
+
+        // Check if a recipe with the same name already exists (case-insensitive)
+        if (recipeService.existsRecipeByNameIgnoreCase(recipe.getName())) {
+            // Add an error message to the model
+            model.addAttribute("recipeNameError", "Recipe name already exists.");
+
+            // Return to the form page
+            return "recipes/add";
+        }
+
+        // Save the recipe to the database
         recipeService.saveRecipe(recipe);
 
         // Redirect to the recipe index page or another appropriate view
         return "redirect:/recipes/index";
-     }
+    }
+
+
 
     @GetMapping("/{recipeName}/delete")
     public String showDeleteRecipeForm(@PathVariable String recipeName, Model model) {
@@ -95,6 +109,5 @@ public class RecipeController {
             return "redirect:/recipes/index";
         }
     }
-
 
 }

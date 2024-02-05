@@ -16,7 +16,7 @@ public class Recipe {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
-    @Column(length=1000)
+    @Column(columnDefinition = "TEXT")
     private String instructions;
 
     public Recipe() {}

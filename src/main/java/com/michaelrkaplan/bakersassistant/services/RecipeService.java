@@ -75,4 +75,11 @@ public class RecipeService {
     public Optional<Recipe> getRecipeByName(String recipeName) {
         return recipeRepository.findByName(recipeName);
     }
+
+    public boolean existsRecipeByNameIgnoreCase(String recipeName) {
+        // Use your repository method to check if a recipe with the given name exists
+        return recipeRepository.existsByNameIgnoreCase(recipeName);
+    }
+
+
 }
