@@ -68,4 +68,33 @@ public class RecipeController {
         return "redirect:/recipes/index";
      }
 
+    @GetMapping("/{recipeName}/delete")
+    public String showDeleteRecipeForm(@PathVariable String recipeName, Model model) {
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
+
+        if (!optionalRecipe.isPresent()) {
+            return "redirect:/recipes/index";
+        } else {
+            Recipe recipe = optionalRecipe.get();
+            model.addAttribute("recipeName", recipe.getName());
+            model.addAttribute("recipeId", recipe.getId());
+        }
+
+        return "recipes/delete";
+    }
+
+    @PostMapping("/delete")
+    public String submitDeleteRecipeForm(@RequestParam Long recipeId) {
+        boolean isDeleted = recipeService.deleteRecipe(recipeId);
+
+        if (isDeleted) {
+            // Redirect to the recipe index page or another appropriate view
+            return "redirect:/recipes/index";
+        } else {
+            // Handle the case where the recipe couldn't be deleted
+            return "redirect:/recipes/index";
+        }
+    }
+
+
 }

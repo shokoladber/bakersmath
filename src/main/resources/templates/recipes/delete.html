@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Recipe</title>
+</head>
+<body>
+
+<h2>Delete Recipe</h2>
+
+<p>Are you sure you want to delete the recipe <strong th:text="${recipeName}"></strong>?</p>
+
+<form th:action="@{/recipes/delete}" method="post">
+    <input type="hidden" name="recipeId" th:value="${recipeId}" />
+    <button type="submit">Yes, Delete</button>
+    <a th:href="@{/recipes}" class="cancel-link">Cancel</a>
+</form>
+
+</body>
+</html>
