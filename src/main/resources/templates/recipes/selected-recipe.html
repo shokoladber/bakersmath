@@ -22,5 +22,8 @@
 <h2>Instructions</h2>
     <p th:text="${instructions}">Instructions</p>
 
+<!-- Link to delete the recipe -->
+<a th:href="@{/recipes/{recipeName}/delete(recipeName=${recipeName})}" class="delete-link">Delete Recipe</a>
+
 </body>
 </html>

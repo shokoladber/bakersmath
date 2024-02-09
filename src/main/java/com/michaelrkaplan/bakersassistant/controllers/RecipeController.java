@@ -99,6 +99,7 @@ public class RecipeController {
 
     @PostMapping("/delete")
     public String submitDeleteRecipeForm(@RequestParam Long recipeId) {
+
         boolean isDeleted = recipeService.deleteRecipe(recipeId);
 
         if (isDeleted) {
