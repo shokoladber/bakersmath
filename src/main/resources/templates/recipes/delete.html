@@ -14,7 +14,7 @@
 <form th:action="@{/recipes/delete}" method="post">
     <input type="hidden" name="recipeId" th:value="${recipeId}" />
     <button type="submit">Yes, Delete</button>
-    <a th:href="@{'/recipes/' + ${recipeId}}" class="cancel-link">Cancel</a>
+    <a th:href="@{/recipes/{recipeName}(recipeName=${recipeName})}" class="cancel-link">Cancel</a>
 
 </form>
 

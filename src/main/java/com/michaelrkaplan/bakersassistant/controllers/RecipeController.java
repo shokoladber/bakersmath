@@ -98,16 +98,20 @@ public class RecipeController {
     }
 
     @PostMapping("/delete")
-    public String submitDeleteRecipeForm(@RequestParam Long recipeId) {
+    public String submitDeleteRecipeForm(@RequestParam Long recipeId,
+                                         @RequestParam(required = false) String cancel) {
+
+        if (cancel != null) {
+            return "redirect:/recipes/{recipeName}/";
+        }
 
         boolean isDeleted = recipeService.deleteRecipe(recipeId);
 
         if (isDeleted) {
-            // Redirect to the recipe index page or another appropriate view
             return "redirect:/recipes/index";
         } else {
             // Handle the case where the recipe couldn't be deleted
-            return "redirect:/recipes/index";
+            return "redirect:/recipes/{recipeName}";
         }
     }
 
