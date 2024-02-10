@@ -1,6 +1,7 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
 import com.michaelrkaplan.bakersassistant.models.Recipe;
+import com.michaelrkaplan.bakersassistant.services.CalculationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final CalculationService calculationService;
 
     @Autowired
-    public RecipeController(RecipeService recipeService) {
+    public RecipeController(RecipeService recipeService, CalculationService calculationService) {
         this.recipeService = recipeService;
+        this.calculationService = calculationService;
     }
 
     @GetMapping("/index")
@@ -45,6 +48,10 @@ public class RecipeController {
             model.addAttribute("recipeName", recipe.getName());
             model.addAttribute("ingredients", recipe.getIngredients());
             model.addAttribute("instructions", recipe.getInstructions());
+
+            // Calculate total weight using CalculationService and add it to the model
+            double totalWeight = calculationService.calculateTotalWeightInGrams(recipe);
+            model.addAttribute("totalWeight", totalWeight);
         }
 
         return "recipes/selected-recipe";
