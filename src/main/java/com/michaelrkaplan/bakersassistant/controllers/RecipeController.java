@@ -50,6 +50,7 @@ public class RecipeController {
             Recipe recipe = optionalRecipe.get();
             model.addAttribute("recipeName", recipe.getName());
             model.addAttribute("ingredients", recipe.getIngredients());
+            model.addAttribute("targetUnitType", "grams");
             model.addAttribute("instructions", recipe.getInstructions());
 
             // Calculate total weight using CalculationService and add it to the model
@@ -126,9 +127,15 @@ public class RecipeController {
     }
 
     @GetMapping("/convert-weight")
-    @ResponseBody // Ensure this annotation is present to indicate a JSON response
-    public Map<String, Double> convertWeight(@RequestParam String unitType, @RequestParam double weight) {
-        double convertedWeight = conversionService.convertFromGrams(weight, UnitType.valueOf(unitType));
+    @ResponseBody
+    public Map<String, Double> convertWeight(
+            @RequestParam String unitType,
+            @RequestParam String targetUnitType,
+            @RequestParam double weight) {
+
+        double convertedWeight = conversionService.convert(weight,
+                UnitType.valueOf(unitType),
+                UnitType.valueOf(targetUnitType));
 
         // Create a Map to hold the converted weight
         Map<String, Double> result = new HashMap<>();

@@ -23,23 +23,35 @@
 <h3>Total Weight</h3>
 
 <!-- Dropdown menu for unit selection -->
-<select id="unitType" onchange="updateTotalWeight()">
+<select id="targetUnitType" onchange="updateTotalWeight()">
     <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
             th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == 'grams'}">
     </option>
 </select>
 
 <!-- Display total weight based on the selected unit type -->
-<p id="totalWeight" th:text="${totalWeight}"></p>
+<span>
+    <p id="totalWeight" th:text="${totalWeight}"></p>
+    <p id="currentUnitType" th:text="${targetUnitType}"></p>
+</span>
+
 
 <script th:inline="javascript">
     // Function to update total weight based on the selected unit type
     function updateTotalWeight() {
-        var unitType = document.getElementById("unitType").value;
+        var targetUnitTypeElement = document.getElementById("targetUnitType");
+        var targetUnitType = targetUnitTypeElement.options[targetUnitTypeElement.selectedIndex].value;
+        var unitTypeElement = document.getElementById("currentUnitType");
+        console.log(unitTypeElement);
+        var unitType = unitTypeElement.innerText;
+        console.log(unitType);
         var totalWeight = parseFloat(document.getElementById("totalWeight").innerText);
 
+        // Update the currentUnitType
+        document.getElementById("currentUnitType").innerText = targetUnitType;
+
         // Make an AJAX call to the server to fetch the converted total weight
-        fetch('/recipes/convert-weight?unitType=' + unitType + '&weight=' + totalWeight)
+        fetch('/recipes/convert-weight?unitType=' + unitType + '&targetUnitType=' + targetUnitType + '&weight=' + totalWeight)
             .then(response => response.json())
             .then(data => {
                 document.getElementById("totalWeight").innerText = data.convertedWeight;
