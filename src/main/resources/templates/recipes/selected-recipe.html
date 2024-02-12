@@ -21,7 +21,34 @@
 
 <!-- Display total weight of the recipe -->
 <h3>Total Weight</h3>
-<p th:text="${totalWeight}"></p>
+
+<!-- Dropdown menu for unit selection -->
+<select id="unitType" onchange="updateTotalWeight()">
+    <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+            th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == 'grams'}">
+    </option>
+</select>
+
+<!-- Display total weight based on the selected unit type -->
+<p id="totalWeight" th:text="${totalWeight}"></p>
+
+<script th:inline="javascript">
+    // Function to update total weight based on the selected unit type
+    function updateTotalWeight() {
+        var unitType = document.getElementById("unitType").value;
+        var totalWeight = parseFloat(document.getElementById("totalWeight").innerText);
+
+        // Make an AJAX call to the server to fetch the converted total weight
+        fetch('/recipes/convert-weight?unitType=' + unitType + '&weight=' + totalWeight)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("totalWeight").innerText = data.convertedWeight;
+            });
+    }
+    // Initial call to set default total weight and unit type
+    updateTotalWeight();
+</script>
+
 
 <h2>Instructions</h2>
     <p th:text="${instructions}">Instructions</p>

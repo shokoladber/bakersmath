@@ -1,16 +1,17 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
 import com.michaelrkaplan.bakersassistant.models.Recipe;
+import com.michaelrkaplan.bakersassistant.models.UnitType;
 import com.michaelrkaplan.bakersassistant.services.CalculationService;
+import com.michaelrkaplan.bakersassistant.services.ConversionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.michaelrkaplan.bakersassistant.services.RecipeService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Controller
 @RequestMapping("/recipes")
@@ -18,11 +19,13 @@ public class RecipeController {
 
     private final RecipeService recipeService;
     private final CalculationService calculationService;
+    private final ConversionService conversionService;
 
     @Autowired
-    public RecipeController(RecipeService recipeService, CalculationService calculationService) {
+    public RecipeController(RecipeService recipeService, CalculationService calculationService, ConversionService conversionService) {
         this.recipeService = recipeService;
         this.calculationService = calculationService;
+        this.conversionService = conversionService;
     }
 
     @GetMapping("/index")
@@ -120,6 +123,18 @@ public class RecipeController {
             // Handle the case where the recipe couldn't be deleted
             return "redirect:/recipes/{recipeName}";
         }
+    }
+
+    @GetMapping("/convert-weight")
+    @ResponseBody // Ensure this annotation is present to indicate a JSON response
+    public Map<String, Double> convertWeight(@RequestParam String unitType, @RequestParam double weight) {
+        double convertedWeight = conversionService.convertFromGrams(weight, UnitType.valueOf(unitType));
+
+        // Create a Map to hold the converted weight
+        Map<String, Double> result = new HashMap<>();
+        result.put("convertedWeight", convertedWeight);
+
+        return result;
     }
 
 }
