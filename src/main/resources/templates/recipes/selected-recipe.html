@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="/js/update-total-weight.js"></script>
+    <script type="text/javascript" src="/js/update-ingredient-quantity.js"></script>
     <title th:text="${recipeName}">Recipe Name</title>
 </head>
 <body>
@@ -15,8 +16,15 @@
 <ul>
     <li th:each="ingredient : ${ingredients}">
         <span th:text="${ingredient.name}"></span>
-        <span th:text="${ingredient.quantity}"></span>
-        <span th:text="${ingredient.unit}"></span>
+        <span class="ingredient-quantity" th:text="${ingredient.quantity}"></span>
+        <!-- Hidden field to store the current unit type -->
+        <input type="hidden" class="current-unit-type" th:value="${ingredient.unit}" />
+        <!-- Display unit as a dropdown menu -->
+        <select class="ingredient-unit-select" onchange="updateIngredientQuantity(this)">
+            <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+                    th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == ingredient.unit}">
+            </option>
+        </select>
     </li>
 </ul>
 
