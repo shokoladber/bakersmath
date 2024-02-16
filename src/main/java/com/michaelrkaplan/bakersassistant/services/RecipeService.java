@@ -81,5 +81,4 @@ public class RecipeService {
         return recipeRepository.existsByNameIgnoreCase(recipeName);
     }
 
-
 }

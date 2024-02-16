@@ -13,7 +13,7 @@
         fetch('/recipes/convert-weight?unitType=' + unitType + '&targetUnitType=' + targetUnitType + '&weight=' + totalWeight)
             .then(response => response.json())
             .then(data => {
-                document.getElementById("totalWeight").innerText = data.convertedWeight;
+                document.getElementById("totalWeight").innerText = data.convertedWeight.toFixed(1);
             });
     }
     // Initial call to set default total weight and unit type

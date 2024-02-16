@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="/js/update-total-weight.js"></script>
     <script type="text/javascript" src="/js/update-ingredient-quantity.js"></script>
+    <script type="text/javascript" src="/js/update-batch-size.js"></script>
     <title th:text="${recipeName}">Recipe Name</title>
 </head>
 <body>
 
 <h1 th:text="${recipeName}">Recipe Name</h1>
+
+<!-- Add a hidden input to store the recipe name -->
+<input type="hidden" id="recipeName" th:value="${recipeName}" />
+
+<!-- Add Batch Size input and Scale Recipe button -->
+<label for="batchSize">Batch Size Multiplier:</label>
+<input type="number" id="batchSize" value="1" min="1" step="1">
+<button onclick="updateBatchSize()">Scale Recipe</button>
 
 <h2>Ingredients</h2>
 

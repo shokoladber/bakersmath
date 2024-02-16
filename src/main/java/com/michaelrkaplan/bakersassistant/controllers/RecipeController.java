@@ -144,4 +144,13 @@ public class RecipeController {
         return result;
     }
 
+    @GetMapping("/scale")
+    @ResponseBody
+    public Recipe scaleRecipe(
+            @RequestParam("recipeName") String recipeName,
+            @RequestParam("batchSizeMultiplier") int batchSizeMultiplier) {
+        Recipe originalRecipe = recipeName != null ? recipeService.getRecipeByName(recipeName).get() : null;
+        return calculationService.scaleRecipe(originalRecipe, batchSizeMultiplier);
+    }
+
 }

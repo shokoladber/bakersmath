@@ -13,7 +13,7 @@ function updateIngredientQuantity(selectElement) {
             const ingredientQuantityElement = selectElement.closest('li').querySelector('.ingredient-quantity');
             console.log(ingredientQuantityElement);
             if (ingredientQuantityElement) {
-                ingredientQuantityElement.innerText = data.convertedWeight;
+                ingredientQuantityElement.innerText = data.convertedWeight.toFixed(1);
 
                  // Update the value of the hidden current-unit-type input after fetch
                  currentUnitTypeElement.value = targetUnitType;

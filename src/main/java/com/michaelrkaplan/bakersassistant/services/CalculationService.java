@@ -28,5 +28,33 @@ public class CalculationService {
         double totalWeightInGrams = calculateTotalWeightInGrams(recipe);
         return conversionService.convert(totalWeightInGrams, UnitType.grams, targetUnit);
     }
+
+    public Recipe scaleRecipe(Recipe originalRecipe, int batchSizeMultiplier) {
+        // Create a new recipe to store scaled ingredients
+        Recipe scaledRecipe = new Recipe();
+
+        // Scale each ingredient and add to the scaled recipe
+        for (Ingredient originalIngredient : originalRecipe.getIngredients()) {
+            Ingredient scaledIngredient = scaleIngredient(originalIngredient, batchSizeMultiplier);
+            scaledRecipe.addIngredient(scaledIngredient);
+        }
+
+        return scaledRecipe;
+    }
+
+    private Ingredient scaleIngredient(Ingredient originalIngredient, int batchSizeMultiplier) {
+        // Create a new ingredient to store scaled details
+        Ingredient scaledIngredient = new Ingredient();
+
+        // Scale the ingredient details
+        scaledIngredient.setName(originalIngredient.getName());
+        double scaledQuantity = originalIngredient.getQuantity() * batchSizeMultiplier;
+        scaledIngredient.setQuantity(scaledQuantity);
+
+        // You may need to handle scaling for other properties like unit, etc.
+
+        return scaledIngredient;
+    }
+
 }
 
