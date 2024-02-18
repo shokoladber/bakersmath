@@ -1,8 +1,6 @@
 package com.michaelrkaplan.bakersassistant.models;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,8 +12,8 @@ public class Recipe {
 
     private String name;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingredient> ingredients = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ingredient> ingredients;
 
     @Column(columnDefinition = "TEXT")
     private String instructions;
@@ -56,7 +54,6 @@ public class Recipe {
 
     public void addIngredient(Ingredient ingredient) {
         ingredients.add(ingredient);
-        ingredient.setRecipe(this);  // Ensure bidirectional relationship
     }
 }
 

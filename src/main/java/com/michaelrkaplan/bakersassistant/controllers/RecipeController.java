@@ -6,6 +6,7 @@ import com.michaelrkaplan.bakersassistant.services.CalculationService;
 import com.michaelrkaplan.bakersassistant.services.ConversionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -146,11 +147,21 @@ public class RecipeController {
 
     @GetMapping("/scale")
     @ResponseBody
-    public Recipe scaleRecipe(
+    public ResponseEntity<Recipe> scaleRecipe(
             @RequestParam("recipeName") String recipeName,
             @RequestParam("batchSizeMultiplier") int batchSizeMultiplier) {
-        Recipe originalRecipe = recipeName != null ? recipeService.getRecipeByName(recipeName).get() : null;
-        return calculationService.scaleRecipe(originalRecipe, batchSizeMultiplier);
+
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
+
+        if (optionalRecipe.isPresent()) {
+            Recipe originalRecipe = optionalRecipe.get();
+            Recipe scaledRecipe = calculationService.scaleRecipe(originalRecipe, batchSizeMultiplier);
+            return ResponseEntity.ok(scaledRecipe);
+        } else {
+            // If the recipe with the given name is not found, you might want to return a 404 Not Found response.
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
 }

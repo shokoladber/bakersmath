@@ -9,10 +9,6 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
-
     private String name;
     private double quantity;
 
@@ -51,7 +47,4 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
 }
