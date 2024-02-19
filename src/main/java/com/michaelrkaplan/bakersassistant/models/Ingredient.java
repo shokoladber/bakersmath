@@ -15,12 +15,17 @@ public class Ingredient {
     @Enumerated(EnumType.STRING)
     private UnitType unit;
 
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
     public Ingredient() {}
 
-    public Ingredient(String name, int quantity, UnitType unit) {
+    public Ingredient(String name, int quantity, UnitType unit, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
+        this.recipe = recipe;
     }
 
     public String getName() {
@@ -47,4 +52,7 @@ public class Ingredient {
         this.unit = unit;
     }
 
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
 }

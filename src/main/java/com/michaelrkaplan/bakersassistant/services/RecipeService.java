@@ -41,7 +41,7 @@ public class RecipeService {
     public Recipe createRecipe(@NotNull Recipe recipe) {
 
         for (Ingredient ingredient : recipe.getIngredients()) {
-            ingredientService.saveIngredient(ingredient);
+            ingredient.setRecipe(recipe);
         }
 
 

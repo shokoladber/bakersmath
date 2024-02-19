@@ -1,5 +1,6 @@
 package com.michaelrkaplan.bakersassistant.controllers;
 
+import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import com.michaelrkaplan.bakersassistant.models.UnitType;
 import com.michaelrkaplan.bakersassistant.services.CalculationService;
@@ -66,7 +67,6 @@ public class RecipeController {
     public String showAddRecipeForm(Model model) {
         // Create a new Recipe object and add it to the model
         Recipe recipe = new Recipe();
-        recipe.setIngredients(new ArrayList<>()); // Initialize the ingredients list
         model.addAttribute("recipe", new Recipe());
 
         return "recipes/add";
@@ -83,6 +83,11 @@ public class RecipeController {
 
             // Return to the form page
             return "recipes/add";
+        }
+
+        // Iterate through the ingredients in the form and set the bidirectional relationship
+        for (Ingredient ingredient : recipe.getIngredients()) {
+            ingredient.setRecipe(recipe);
         }
 
         // Save the recipe to the database
