@@ -3,11 +3,14 @@ package com.michaelrkaplan.bakersassistant.services;
 import com.michaelrkaplan.bakersassistant.models.Ingredient;
 import com.michaelrkaplan.bakersassistant.models.Recipe;
 import com.michaelrkaplan.bakersassistant.models.UnitType;
+import com.michaelrkaplan.bakersassistant.repositories.RecipeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Properties;
 
 @Service
 public class CalculationService {
@@ -16,6 +19,9 @@ public class CalculationService {
 
     @Autowired
     private ConversionService conversionService;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     public double calculateTotalWeightInGrams(Recipe recipe) {
         double totalWeight = 0.0;
@@ -51,6 +57,9 @@ public class CalculationService {
             // Add the scaled ingredient to the scaled recipe
             scaledRecipe.addIngredient(scaledIngredient);
         }
+
+        // Save the scaled recipe
+        recipeRepository.save(scaledRecipe);
 
         // Logging statements
         LOGGER.info("Scaling recipe: {} with id: {} to a new recipe with id: {}", originalRecipe.getName(), originalRecipe.getId(), scaledRecipe.getId());
