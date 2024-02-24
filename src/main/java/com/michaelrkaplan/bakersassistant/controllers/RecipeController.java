@@ -49,6 +49,7 @@ public class RecipeController {
         if (!optionalRecipe.isPresent()) {
             return "redirect:/recipes/index";
         } else {
+
             Recipe recipe = optionalRecipe.get();
             model.addAttribute("recipeName", recipe.getName());
             model.addAttribute("ingredients", recipe.getIngredients());
@@ -154,19 +155,31 @@ public class RecipeController {
     @ResponseBody
     public ResponseEntity<Recipe> scaleRecipe(
             @RequestParam("recipeName") String recipeName,
-            @RequestParam("batchSizeMultiplier") int batchSizeMultiplier) {
+            @RequestParam(value = "batchSizeMultiplier", required = false) Integer batchSizeMultiplier,
+            @RequestParam(value = "desiredTotalWeight", required = false) Double desiredTotalWeight,
+            @RequestParam(value = "targetUnit", required = false) UnitType targetUnit) {
+
+        if ((batchSizeMultiplier == null && (desiredTotalWeight == null || targetUnit == null)) ||
+                (batchSizeMultiplier != null && (desiredTotalWeight != null || targetUnit != null))) {
+            return ResponseEntity.badRequest().build();
+        }
 
         Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
 
         if (optionalRecipe.isPresent()) {
             Recipe originalRecipe = optionalRecipe.get();
-            Recipe scaledRecipe = calculationService.scaleRecipe(originalRecipe, batchSizeMultiplier);
-            return ResponseEntity.ok(scaledRecipe);
+
+            if (batchSizeMultiplier != null) {
+                Recipe scaledRecipe = calculationService.scaleRecipeByBatchSize(originalRecipe, batchSizeMultiplier);
+                return ResponseEntity.ok(scaledRecipe);
+            } else {
+                Recipe scaledRecipe = calculationService.scaleRecipeByTotalWeight(originalRecipe, desiredTotalWeight, targetUnit);
+                return ResponseEntity.ok(scaledRecipe);
+            }
         } else {
             // If the recipe with the given name is not found, you might want to return a 404 Not Found response.
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }

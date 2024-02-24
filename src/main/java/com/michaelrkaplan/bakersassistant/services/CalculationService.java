@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Properties;
-
 @Service
-public class CalculationService {
+public final class CalculationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CalculationService.class);
 
@@ -38,8 +36,11 @@ public class CalculationService {
         return conversionService.convert(totalWeightInGrams, UnitType.grams, targetUnit);
     }
 
-    @Transactional
-    public Recipe scaleRecipe(Recipe originalRecipe, int batchSizeMultiplier) {
+    public Recipe scaleRecipeByBatchSize(Recipe originalRecipe, int batchSizeMultiplier) {
+        if (batchSizeMultiplier <= 0) {
+            throw new IllegalArgumentException("Invalid batch size multiplier for scaling recipe");
+        }
+
         // Create a new recipe to store scaled ingredients
         Recipe scaledRecipe = new Recipe();
 
@@ -49,7 +50,7 @@ public class CalculationService {
 
         // Scale each ingredient and add to the scaled recipe
         for (Ingredient originalIngredient : originalRecipe.getIngredients()) {
-            Ingredient scaledIngredient = scaleIngredient(originalIngredient, batchSizeMultiplier);
+            Ingredient scaledIngredient = scaleIngredientByBatchSize(originalIngredient, batchSizeMultiplier);
 
             // Set the recipe of the scaled ingredient to the scaled recipe
             scaledIngredient.setRecipe(scaledRecipe);
@@ -67,8 +68,43 @@ public class CalculationService {
         return scaledRecipe;
     }
 
+    public Recipe scaleRecipeByTotalWeight(Recipe originalRecipe, double desiredTotalWeight, UnitType targetUnit) {
+        if (desiredTotalWeight <= 0) {
+            throw new IllegalArgumentException("Invalid desired total weight for scaling recipe");
+        }
 
-    private Ingredient scaleIngredient(Ingredient originalIngredient, int batchSizeMultiplier) {
+        // Create a new recipe to store scaled ingredients
+        Recipe scaledRecipe = new Recipe();
+
+        // Set name and instructions of scaledIngredient
+        scaledRecipe.setName(originalRecipe.getName() + " (Scaled by Total Weight)");
+        scaledRecipe.setInstructions(originalRecipe.getInstructions());
+
+        // Calculate the scaling factor based on desired total weight
+        double currentTotalWeight = calculateTotalWeightInGrams(originalRecipe);
+        double scalingFactor = desiredTotalWeight / currentTotalWeight;
+
+        // Scale each ingredient and add to the scaled recipe
+        for (Ingredient originalIngredient : originalRecipe.getIngredients()) {
+            Ingredient scaledIngredient = scaleIngredientByTotalWeight(originalIngredient, scalingFactor, targetUnit);
+
+            // Set the recipe of the scaled ingredient to the scaled recipe
+            scaledIngredient.setRecipe(scaledRecipe);
+
+            // Add the scaled ingredient to the scaled recipe
+            scaledRecipe.addIngredient(scaledIngredient);
+        }
+
+        // Save the scaled recipe
+        recipeRepository.save(scaledRecipe);
+
+        // Logging statements
+        LOGGER.info("Scaling recipe: {} with id: {} to a new recipe with id: {}", originalRecipe.getName(), originalRecipe.getId(), scaledRecipe.getId());
+
+        return scaledRecipe;
+    }
+
+    private Ingredient scaleIngredientByBatchSize(Ingredient originalIngredient, int batchSizeMultiplier) {
         // Create a new ingredient to store scaled details
         Ingredient scaledIngredient = new Ingredient();
 
@@ -79,6 +115,25 @@ public class CalculationService {
 
         // Set UnityType of the ingredient
         UnitType scaledUnit = originalIngredient.getUnit();
+        scaledIngredient.setUnit(scaledUnit);
+
+        // Logging statements
+        LOGGER.info("Scaling ingredient: {} from {} to {}", originalIngredient.getName(), originalIngredient.getQuantity(), scaledQuantity);
+
+        return scaledIngredient;
+    }
+
+    private Ingredient scaleIngredientByTotalWeight(Ingredient originalIngredient, double scalingFactor, UnitType targetUnit) {
+        // Create a new ingredient to store scaled details
+        Ingredient scaledIngredient = new Ingredient();
+
+        // Scale the ingredient details
+        scaledIngredient.setName(originalIngredient.getName());
+        double scaledQuantity = originalIngredient.getQuantity() * scalingFactor;
+        scaledIngredient.setQuantity(scaledQuantity);
+
+        // Set UnityType of the ingredient
+        UnitType scaledUnit = targetUnit;  // Use the specified targetUnit for scaling by total weight
         scaledIngredient.setUnit(scaledUnit);
 
         // Logging statements
