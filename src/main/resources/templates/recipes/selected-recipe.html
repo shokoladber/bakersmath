@@ -7,8 +7,22 @@
     <script type="text/javascript" src="/js/update-ingredient-quantity.js"></script>
     <script type="text/javascript" src="/js/update-batch-size.js"></script>
     <title th:text="${recipeName}">Recipe Name</title>
+
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css" />
+
+    <!-- jQuery -->
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Popper.js -->
+    <script src="/webjars/popper.js/2.11.6/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+
 </head>
 <body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <h1 th:text="${recipeName}">Recipe Name</h1>
 
