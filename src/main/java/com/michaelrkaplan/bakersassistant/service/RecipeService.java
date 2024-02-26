@@ -1,8 +1,8 @@
-package com.michaelrkaplan.bakersassistant.services;
+package com.michaelrkaplan.bakersassistant.service;
 
-import com.michaelrkaplan.bakersassistant.models.Ingredient;
-import com.michaelrkaplan.bakersassistant.models.Recipe;
-import com.michaelrkaplan.bakersassistant.repositories.RecipeRepository;
+import com.michaelrkaplan.bakersassistant.model.Ingredient;
+import com.michaelrkaplan.bakersassistant.model.Recipe;
+import com.michaelrkaplan.bakersassistant.repository.RecipeRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

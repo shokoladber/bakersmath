@@ -1,14 +1,13 @@
-package com.michaelrkaplan.bakersassistant.services;
+package com.michaelrkaplan.bakersassistant.service;
 
-import com.michaelrkaplan.bakersassistant.models.Ingredient;
-import com.michaelrkaplan.bakersassistant.models.Recipe;
-import com.michaelrkaplan.bakersassistant.models.UnitType;
-import com.michaelrkaplan.bakersassistant.repositories.RecipeRepository;
+import com.michaelrkaplan.bakersassistant.model.Ingredient;
+import com.michaelrkaplan.bakersassistant.model.Recipe;
+import com.michaelrkaplan.bakersassistant.model.UnitType;
+import com.michaelrkaplan.bakersassistant.repository.RecipeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public final class CalculationService {

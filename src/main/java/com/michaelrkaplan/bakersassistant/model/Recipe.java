@@ -1,4 +1,4 @@
-package com.michaelrkaplan.bakersassistant.models;
+package com.michaelrkaplan.bakersassistant.model;
 
 import jakarta.persistence.*;
 
@@ -13,6 +13,10 @@ public class Recipe {
     private Long id;
 
     private String name;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<>();
@@ -37,6 +41,14 @@ public class Recipe {
         this.name = name;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public List<Ingredient> getIngredients() {
         return ingredients;
     }
@@ -57,6 +69,7 @@ public class Recipe {
         ingredients.add(ingredient);
         ingredient.setRecipe(this);
     }
+
 }
 
 

@@ -1,6 +1,6 @@
-package com.michaelrkaplan.bakersassistant.repositories;
+package com.michaelrkaplan.bakersassistant.repository;
 
-import com.michaelrkaplan.bakersassistant.models.Recipe;
+import com.michaelrkaplan.bakersassistant.model.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

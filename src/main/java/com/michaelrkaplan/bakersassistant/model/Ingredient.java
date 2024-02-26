@@ -1,4 +1,4 @@
-package com.michaelrkaplan.bakersassistant.models;
+package com.michaelrkaplan.bakersassistant.model;
 
 import jakarta.persistence.*;
 

@@ -1,17 +1,17 @@
-package com.michaelrkaplan.bakersassistant.controllers;
+package com.michaelrkaplan.bakersassistant.controller;
 
-import com.michaelrkaplan.bakersassistant.models.Ingredient;
-import com.michaelrkaplan.bakersassistant.models.Recipe;
-import com.michaelrkaplan.bakersassistant.models.UnitType;
-import com.michaelrkaplan.bakersassistant.services.CalculationService;
-import com.michaelrkaplan.bakersassistant.services.ConversionService;
+import com.michaelrkaplan.bakersassistant.model.Ingredient;
+import com.michaelrkaplan.bakersassistant.model.Recipe;
+import com.michaelrkaplan.bakersassistant.model.UnitType;
+import com.michaelrkaplan.bakersassistant.service.CalculationService;
+import com.michaelrkaplan.bakersassistant.service.ConversionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.michaelrkaplan.bakersassistant.services.RecipeService;
+import com.michaelrkaplan.bakersassistant.service.RecipeService;
 
 import java.util.*;
 

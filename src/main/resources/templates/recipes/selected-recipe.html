@@ -44,7 +44,7 @@
         <input type="hidden" class="current-unit-type" th:value="${ingredient.unit}" />
         <!-- Display unit as a dropdown menu -->
         <select class="ingredient-unit-select" onchange="updateIngredientQuantity(this)">
-            <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+            <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.model.UnitType).values()}"
                     th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == ingredient.unit}">
             </option>
         </select>
@@ -56,7 +56,7 @@
 
 <!-- Dropdown menu for unit selection -->
 <select id="targetUnitType" onchange="updateTotalWeight()">
-    <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+    <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.model.UnitType).values()}"
             th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == 'grams'}">
     </option>
 </select>

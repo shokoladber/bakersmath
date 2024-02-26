@@ -38,7 +38,7 @@
             <input type="text" th:field="*{ingredients[__${status.index}__].name}" placeholder="Ingredient Name" required>
             <input type="number" th:field="*{ingredients[__${status.index}__].quantity}" placeholder="Quantity" required>
             <select th:field="*{ingredients[__${status.index}__].unit}" required>
-                <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.models.UnitType).values()}"
+                <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.model.UnitType).values()}"
                         th:value="${unit.toLowerCase()}" th:text="${unit}">
                 </option>
             </select>

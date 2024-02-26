@@ -1,6 +1,6 @@
-package com.michaelrkaplan.bakersassistant.services;
+package com.michaelrkaplan.bakersassistant.service;
 
-import com.michaelrkaplan.bakersassistant.models.UnitType;
+import com.michaelrkaplan.bakersassistant.model.UnitType;
 import org.springframework.stereotype.Service;
 
 @Service
