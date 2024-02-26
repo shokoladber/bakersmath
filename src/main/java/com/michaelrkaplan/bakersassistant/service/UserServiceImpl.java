@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean authenticateUser(String email, String password) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        Optional<User> userOptional = userRepository.findByEmailIgnoreCase(email);
 
         // Check if the user with the provided email exists
         if (userOptional.isPresent()) {

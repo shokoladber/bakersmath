@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @Controller
 public class AuthenticationController {
@@ -31,14 +33,19 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestParam String email, @RequestParam String password) {
+
+        // Convert email to lowercase for case-insensitive comparison
+        String normalizedEmail = email.toLowerCase();
+
         // Check if the email is already taken
-        if (userRepository.findByEmail(email) != null) {
+        Optional<User> existingUserOptional = userRepository.findByEmailIgnoreCase(normalizedEmail);
+        if (existingUserOptional.isPresent()) {
             return ResponseEntity.badRequest().body("Email is already in use");
         }
 
         // Create a new user
         User user = new User();
-        user.setEmail(email);
+        user.setEmail(normalizedEmail);
         // Hash the password before saving it
         user.setPassword(passwordEncoder.encode(password));
 
