@@ -3,9 +3,12 @@ package com.michaelrkaplan.bakersassistant.controller;
 import com.michaelrkaplan.bakersassistant.dto.UserRequest;
 import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
-import com.michaelrkaplan.bakersassistant.service.UserService;
+import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +21,7 @@ import java.util.Optional;
 public class AuthenticationController {
 
     @Autowired
-    private UserService userService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -61,9 +64,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@RequestBody UserRequest userRequest, Model model) {
-        // Logic to authenticate user using userRequest.getEmail() and userRequest.getPassword()
-        if (userService.authenticateUser(userRequest.getEmail(), userRequest.getPassword())) {
+    public String processLogin(@RequestParam String email, @RequestParam String password, Model model) {
+        // Load user details using UserDetailsService
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        // Logic to authenticate user
+        if (userDetails != null && userDetails.getPassword().equals(password)) {
+            // Manually set the authentication in the SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+            );
+
             // Redirect to a success page or perform other actions
             return "redirect:/home";
         } else {

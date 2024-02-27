@@ -4,30 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>User Login</title>
     <!-- Add any additional CSS or styling links here -->
 </head>
 <body>
 
-<div>
-    <h2>Login</h2>
-    <!-- Display error messages if authentication fails -->
-    <p th:if="${param.error}" style="color: red;">Invalid username or password</p>
 
-    <!-- Login form -->
-    <form th:action="@{/login}" method="post">
-        <!-- Username input -->
+<h2>User Login</h2>
+<!-- Display error messages if authentication fails -->
+<p th:if="${param.error}" style="color: red;">Invalid username or password</p>
+
+<!-- Login form -->
+<form th:action="@{/login}" method="post">
+    <!-- Username input -->
+    <div>
         <label for="email">Email:</label>
         <input type="text" id="email" name="email" required autofocus/>
+    </div>
 
-        <!-- Password input -->
+    <!-- Password input -->
+    <div>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required/>
+    </div>
 
-        <!-- Submit button -->
-        <button type="submit">Login</button>
-    </form>
-</div>
+    <!-- Submit button -->
+    <button type="submit">Login</button>
+</form>
 
 </body>
 </html>
