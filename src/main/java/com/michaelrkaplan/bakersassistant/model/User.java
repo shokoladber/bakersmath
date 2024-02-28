@@ -1,7 +1,10 @@
 package com.michaelrkaplan.bakersassistant.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -14,13 +17,14 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
     @Column(nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();
-
-    // Constructors, getters, setters, and other methods
 
     public User() {
         // Default constructor
@@ -28,7 +32,13 @@ public class User {
 
     public User(String email, String password) {
         this.email = email;
+        this.username = email;
         this.password = password;
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Define user authorities (roles) if needed
+        return Collections.emptyList();
     }
 
     // Getters and setters
@@ -40,6 +50,10 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getUsername() {return username;}
+
+    public void setUsername(String username) {this.username = username;}
 
     public String getEmail() {
         return email;

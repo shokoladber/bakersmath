@@ -15,10 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @Controller
 public class AuthenticationController {
+
+    private static final Logger LOGGER = Logger.getLogger(AuthenticationController.class.getName());
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -35,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<String> registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password) {
 
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
@@ -46,8 +50,15 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body("Email is already in use");
         }
 
+        // Check if the username is already taken
+        existingUserOptional = userRepository.findByUsernameIgnoreCase(username);
+        if (existingUserOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Username is already in use");
+        }
+
         // Create a new user
         User user = new User();
+        user.setUsername(username);
         user.setEmail(normalizedEmail);
         // Hash the password before saving it
         user.setPassword(passwordEncoder.encode(password));
@@ -56,6 +67,7 @@ public class AuthenticationController {
 
         return ResponseEntity.ok("User registered successfully");
     }
+
 
 
     @GetMapping("/login")
@@ -70,6 +82,8 @@ public class AuthenticationController {
 
         // Logic to authenticate user
         if (userDetails != null && userDetails.getPassword().equals(password)) {
+            LOGGER.log(Level.INFO, "User authenticated successfully: " + email);
+
             // Manually set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
@@ -78,6 +92,8 @@ public class AuthenticationController {
             // Redirect to a success page or perform other actions
             return "redirect:/home";
         } else {
+            LOGGER.log(Level.WARNING, "Authentication failed for user: " + email);
+
             // If authentication fails, add an error message to the model and return to the login page
             model.addAttribute("error", "Invalid email or password");
             return "login";
