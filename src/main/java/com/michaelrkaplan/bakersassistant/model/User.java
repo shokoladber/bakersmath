@@ -2,13 +2,16 @@ package com.michaelrkaplan.bakersassistant.model;
 
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 @Entity
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,19 +39,41 @@ public class User {
         this.password = password;
     }
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Define user authorities (roles) if needed
-        return Collections.emptyList();
+        // Return the roles/authorities of the user
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+        recipe.setUser(this);
     }
 
     // Getters and setters
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUsername() {return username;}
@@ -79,9 +104,5 @@ public class User {
         this.recipes = recipes;
     }
 
-    public void addRecipe(Recipe recipe) {
-        recipes.add(recipe);
-        recipe.setUser(this);
-    }
 }
 

@@ -76,13 +76,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@RequestParam String email, @RequestParam String password, Model model) {
+    public String processLogin(@RequestParam String username, @RequestParam String password, Model model) {
         // Load user details using UserDetailsService
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         // Logic to authenticate user
         if (userDetails != null && userDetails.getPassword().equals(password)) {
-            LOGGER.log(Level.INFO, "User authenticated successfully: " + email);
+            LOGGER.log(Level.INFO, "User authenticated successfully: " + username);
 
             // Manually set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(
@@ -92,10 +92,10 @@ public class AuthenticationController {
             // Redirect to a success page or perform other actions
             return "redirect:/home";
         } else {
-            LOGGER.log(Level.WARNING, "Authentication failed for user: " + email);
+            LOGGER.log(Level.WARNING, "Authentication failed for user: " + username);
 
             // If authentication fails, add an error message to the model and return to the login page
-            model.addAttribute("error", "Invalid email or password");
+            model.addAttribute("error", "Invalid username or password");
             return "login";
         }
     }
