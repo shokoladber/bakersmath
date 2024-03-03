@@ -3,6 +3,7 @@ package com.michaelrkaplan.bakersassistant.controller;
 import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,9 +45,8 @@ public class AuthenticationController {
                                @RequestParam String email,
                                @RequestParam String password,
                                Model model,
+                               @ModelAttribute("user") @Valid User user,
                                Errors errors) {
-
-        model.addAttribute("errors", errors);
 
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
@@ -58,11 +59,12 @@ public class AuthenticationController {
 
         // Check for validation errors
         if (errors.hasErrors()) {
+            model.addAttribute("errors", errors);
             return "register";
         }
 
         // Create a new user
-        User user = createUser(username, normalizedEmail, password);
+        user = createUser(username, normalizedEmail, password);
 
         userRepository.save(user);
 
