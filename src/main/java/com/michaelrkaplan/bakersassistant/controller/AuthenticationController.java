@@ -1,20 +1,20 @@
 package com.michaelrkaplan.bakersassistant.controller;
 
-import com.michaelrkaplan.bakersassistant.dto.UserRequest;
 import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,34 +39,57 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestParam String username, @RequestParam String email, @RequestParam String password) {
+    public String registerUser(@RequestParam String username,
+                               @RequestParam String email,
+                               @RequestParam String password,
+                               Model model,
+                               Errors errors) {
+
+        model.addAttribute("errors", errors);
 
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
 
-        // Check if the email is already taken
-        Optional<User> existingUserOptional = userRepository.findByEmailIgnoreCase(normalizedEmail);
-        if (existingUserOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("Email is already in use");
-        }
+        // Validate email uniqueness
+        validateEmailUniqueness(errors, normalizedEmail);
 
-        // Check if the username is already taken
-        existingUserOptional = userRepository.findByUsernameIgnoreCase(username);
-        if (existingUserOptional.isPresent()) {
-            return ResponseEntity.badRequest().body("Username is already in use");
+        // Validate username uniqueness
+        validateUsernameUniqueness(errors, username);
+
+        // Check for validation errors
+        if (errors.hasErrors()) {
+            return "register";
         }
 
         // Create a new user
+        User user = createUser(username, normalizedEmail, password);
+
+        userRepository.save(user);
+
+        return "redirect:/login";
+    }
+
+    private void validateEmailUniqueness(Errors errors, String normalizedEmail) {
+        if (userRepository.findByEmailIgnoreCase(normalizedEmail).isPresent()) {
+            errors.rejectValue("email", "email", "Email is already in use");
+        }
+    }
+
+    private void validateUsernameUniqueness(Errors errors, String username) {
+        if (userRepository.findByUsernameIgnoreCase(username).isPresent()) {
+            errors.rejectValue("username", "username", "Username is already taken");
+        }
+    }
+
+    private User createUser(String username, String normalizedEmail, String password) {
         User user = new User();
         user.setUsername(username);
         user.setEmail(normalizedEmail);
         // Hash the password before saving it
         user.setPassword(passwordEncoder.encode(password));
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok("User registered successfully");
+        return user;
     }
+
 
 
 
