@@ -5,10 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class User implements UserDetails {
@@ -25,6 +22,14 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();

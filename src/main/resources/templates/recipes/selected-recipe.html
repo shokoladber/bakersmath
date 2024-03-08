@@ -46,7 +46,9 @@
         <!-- Display unit as a dropdown menu -->
         <select class="ingredient-unit-select" onchange="updateIngredientQuantity(this)">
             <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.model.UnitType).values()}"
-                    th:value="${unit.name}" th:text="${unit.name}" th:selected="${unit.name == ingredient.unit}">
+                    th:value="${unit.name}"
+                    th:text="${unit.name}"
+                    th:selected="${unit.name == ingredient.unit}">
             </option>
         </select>
     </li>
