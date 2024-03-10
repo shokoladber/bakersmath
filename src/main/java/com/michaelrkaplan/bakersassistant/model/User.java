@@ -38,9 +38,9 @@ public class User implements UserDetails {
         // Default constructor
     }
 
-    public User(String email, String password) {
+    public User(String email, String username, String password) {
         this.email = email;
-        this.username = email;
+        this.username = username;
         this.password = password;
     }
 
@@ -109,5 +109,21 @@ public class User implements UserDetails {
         this.recipes = recipes;
     }
 
+    public void addRole(Role role) {
+        if (roles == null) {
+            roles = new HashSet<>();
+        }
+        roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        if (roles != null) {
+            roles.remove(role);
+        }
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
 }
 

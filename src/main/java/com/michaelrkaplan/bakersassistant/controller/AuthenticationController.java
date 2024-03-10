@@ -1,9 +1,9 @@
 package com.michaelrkaplan.bakersassistant.controller;
 
-import com.michaelrkaplan.bakersassistant.model.User;
+import com.michaelrkaplan.bakersassistant.dto.RegistrationForm;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
-import jakarta.validation.Valid;
+import com.michaelrkaplan.bakersassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +27,9 @@ public class AuthenticationController {
     private static final Logger LOGGER = Logger.getLogger(AuthenticationController.class.getName());
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
@@ -36,17 +39,21 @@ public class AuthenticationController {
     private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/register")
-    public String showRegistrationForm() {
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("registrationForm", new RegistrationForm());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam String username,
-                               @RequestParam String email,
-                               @RequestParam String password,
+    public String registerUser(@ModelAttribute RegistrationForm registrationForm,
                                Model model,
-                               @ModelAttribute("user") @Valid User user,
                                Errors errors) {
+
+        String username = registrationForm.getUsername();
+        String email = registrationForm.getEmail();
+        String password = registrationForm.getPassword();
+
+        userService.registerUser(email, username, password);
 
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
@@ -63,11 +70,6 @@ public class AuthenticationController {
             return "register";
         }
 
-        // Create a new user
-        user = createUser(username, normalizedEmail, password);
-
-        userRepository.save(user);
-
         return "redirect:/login";
     }
 
@@ -82,18 +84,6 @@ public class AuthenticationController {
             errors.rejectValue("username", "username", "Username is already taken");
         }
     }
-
-    private User createUser(String username, String normalizedEmail, String password) {
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(normalizedEmail);
-        // Hash the password before saving it
-        user.setPassword(passwordEncoder.encode(password));
-        return user;
-    }
-
-
-
 
     @GetMapping("/login")
     public String showLoginForm() {
