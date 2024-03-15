@@ -1,12 +1,12 @@
 package com.michaelrkaplan.bakersassistant.service;
 
+import com.michaelrkaplan.bakersassistant.model.CustomUserDetails;
 import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import org.apache.catalina.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,12 +24,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByUsernameIgnoreCase(username);
 
         return userOptional.map(user ->
-                        new org.springframework.security.core.userdetails.User(
-                                user.getUsername(), user.getPassword(), user.getAuthorities()))
+                        new com.michaelrkaplan.bakersassistant.model.User(
+                                user.getUsername(), user.getEmail(), user.getPassword()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 

@@ -53,8 +53,6 @@ public class AuthenticationController {
         String email = registrationForm.getEmail();
         String password = registrationForm.getPassword();
 
-        userService.registerUser(email, username, password);
-
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
 
@@ -69,6 +67,8 @@ public class AuthenticationController {
             model.addAttribute("errors", errors);
             return "register";
         }
+
+        userService.registerUser(email, username, password);
 
         return "redirect:/login";
     }

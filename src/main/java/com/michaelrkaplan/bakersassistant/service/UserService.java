@@ -7,8 +7,6 @@ import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
 public class UserService {
 
