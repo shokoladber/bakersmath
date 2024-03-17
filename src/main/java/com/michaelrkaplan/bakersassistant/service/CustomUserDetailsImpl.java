@@ -1,21 +1,15 @@
-package com.michaelrkaplan.bakersassistant.model;
+package com.michaelrkaplan.bakersassistant.service;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.michaelrkaplan.bakersassistant.model.User;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-
-public class CustomUserDetails implements UserDetails {
+@Service
+public class CustomUserDetailsImpl implements CustomUserDetails {
 
     private final User user;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetailsImpl(User user) {
         this.user = user;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getAuthorities();
     }
 
     @Override
@@ -28,6 +22,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getUsername();
     }
 
+    @Override
     public String getEmail() {
         return user.getEmail();
     }
@@ -51,5 +46,4 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
-
 }

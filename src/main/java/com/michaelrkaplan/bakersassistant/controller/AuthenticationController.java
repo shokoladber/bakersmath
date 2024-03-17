@@ -1,13 +1,13 @@
 package com.michaelrkaplan.bakersassistant.controller;
 
 import com.michaelrkaplan.bakersassistant.dto.RegistrationForm;
+import com.michaelrkaplan.bakersassistant.service.CustomUserDetails;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import com.michaelrkaplan.bakersassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +30,10 @@ public class AuthenticationController {
     private UserService userService;
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceImp;
+
+    @Autowired
+    private CustomUserDetails customUserDetails;
 
     @Autowired
     private UserRepository userRepository;
@@ -93,7 +96,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public String processLogin(@RequestParam String username, @RequestParam String password, Model model) {
         // Load user details using UserDetailsService
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        CustomUserDetails userDetails = userDetailsServiceImp.loadUserByUsername(username);
 
         // Logic to authenticate user
         if (userDetails != null && userDetails.getPassword().equals(password)) {
@@ -101,7 +104,7 @@ public class AuthenticationController {
 
             // Manually set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+                    new UsernamePasswordAuthenticationToken(userDetails, null, customUserDetails.getAuthorities())
             );
 
             // Redirect to a success page or perform other actions
