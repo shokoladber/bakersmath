@@ -20,7 +20,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void registerUser(String username, String email, String password) {
+    public void registerUser(String username, String password, String email) {
 
         User user = new User();
         user.setUsername(username);

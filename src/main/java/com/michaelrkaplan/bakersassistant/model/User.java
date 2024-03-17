@@ -97,4 +97,3 @@ public class User {
         return roles;
     }
 }
-

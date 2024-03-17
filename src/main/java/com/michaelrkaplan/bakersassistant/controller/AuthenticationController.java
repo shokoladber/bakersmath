@@ -3,6 +3,7 @@ package com.michaelrkaplan.bakersassistant.controller;
 import com.michaelrkaplan.bakersassistant.dto.RegistrationForm;
 import com.michaelrkaplan.bakersassistant.service.CustomUserDetails;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
+import com.michaelrkaplan.bakersassistant.service.CustomUserDetailsImpl;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import com.michaelrkaplan.bakersassistant.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,9 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @Autowired
     private UserDetailsServiceImpl userDetailsServiceImp;
 
-    @Autowired
-    private CustomUserDetails customUserDetails;
+    private CustomUserDetailsImpl customUserDetails;
 
     @Autowired
     private UserRepository userRepository;
@@ -71,7 +70,7 @@ public class AuthenticationController {
             return "register";
         }
 
-        userService.registerUser(email, username, password);
+        userService.registerUser(username, password, email);
 
         return "redirect:/login";
     }
@@ -96,15 +95,15 @@ public class AuthenticationController {
     @PostMapping("/login")
     public String processLogin(@RequestParam String username, @RequestParam String password, Model model) {
         // Load user details using UserDetailsService
-        CustomUserDetails userDetails = userDetailsServiceImp.loadUserByUsername(username);
+        CustomUserDetails customUserDetails = userDetailsServiceImp.loadUserByUsername(username);
 
         // Logic to authenticate user
-        if (userDetails != null && userDetails.getPassword().equals(password)) {
+        if (customUserDetails != null && customUserDetails.getPassword().equals(password)) {
             LOGGER.log(Level.INFO, "User authenticated successfully: " + username);
 
             // Manually set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(userDetails, null, customUserDetails.getAuthorities())
+                    new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities())
             );
 
             // Redirect to a success page or perform other actions

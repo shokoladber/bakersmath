@@ -1,15 +1,22 @@
 package com.michaelrkaplan.bakersassistant.service;
 
 import com.michaelrkaplan.bakersassistant.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsImpl implements CustomUserDetails {
 
-    private final User user;
+    private User user;
 
+    // constructor is used for autowire by constructor
     public CustomUserDetailsImpl(User user) {
         this.user = user;
+    }
+
+    // default constructor to avoid BeanInstantiationException for autowire
+    public CustomUserDetailsImpl(){
+        // Default constructor
     }
 
     @Override
