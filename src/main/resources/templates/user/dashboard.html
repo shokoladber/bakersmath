@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <!-- Add any additional CSS or styling links here -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="container">
+    <h1>Welcome, <span th:text="${#authentication.principal.username}"></span>!</h1>
+    <!-- Display user-specific content here -->
+    <div>
+        <!-- Example: Display user profile information -->
+        <h2>User Profile</h2>
+        <p>Username: <span th:text="${#authentication.principal.username}"></span></p>
+        <!-- Add more profile information as needed -->
+    </div>
+    <!-- Add more dashboard components and features here -->
+</div>
+
+<!-- Add any additional JavaScript or Bootstrap scripts here -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-FCzn2ky1A7+ewBv2TEPSXt4HBEyy5D6qg4tZelG20yRpsDgdmh6qvdo+5T32ubz6"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-pzjw8f+2nqu0yiR3ZOzFMO7pNIfy2/kNJkds9eYO3ekHDgy2Cx4JgCGyJzAlpwOs"
+        crossorigin="anonymous"></script>
+</body>
+</html>

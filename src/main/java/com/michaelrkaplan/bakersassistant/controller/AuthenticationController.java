@@ -6,11 +6,13 @@ import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.CustomUserDetailsImpl;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import com.michaelrkaplan.bakersassistant.service.UserService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -115,8 +118,20 @@ public class AuthenticationController {
             // If authentication is successful, set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
 
-            // Redirect to the home page or any other success page
-            return "redirect:/home";
+            // Get the authenticated user's authorities (roles)
+            Collection<? extends GrantedAuthority> authorities = authenticationResponse.getAuthorities();
+
+            // Redirect users based on their roles
+            if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                // Redirect admin users to the admin dashboard
+                return "redirect:/admin/dashboard";
+            } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
+                // Redirect regular users to the user dashboard
+                return "redirect:/user/dashboard";
+            } else {
+                // If the user has no specific role, redirect to a generic homepage
+                return "redirect:/home";
+            }
         } catch (AuthenticationException e) {
             // If authentication fails, add an error message to the model and return to the login page
             model.addAttribute("error", "Invalid username or password");
