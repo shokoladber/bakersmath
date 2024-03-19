@@ -9,14 +9,13 @@ public class CustomUserDetailsImpl implements CustomUserDetails {
 
     private User user;
 
-    // constructor is used for autowire by constructor
-    public CustomUserDetailsImpl(User user) {
-        this.user = user;
-    }
-
     // default constructor to avoid BeanInstantiationException for autowire
     public CustomUserDetailsImpl(){
         // Default constructor
+    }
+
+    public CustomUserDetailsImpl(User user) {
+        this.user = user;
     }
 
     @Override
