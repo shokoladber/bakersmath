@@ -6,7 +6,6 @@ import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.CustomUserDetailsImpl;
 import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
 import com.michaelrkaplan.bakersassistant.service.UserService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,13 +16,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -106,7 +105,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String processLogin(@ModelAttribute LoginForm loginForm, Model model) {
+    public String processLogin(@ModelAttribute LoginForm loginForm,
+                               BindingResult bindingResult,
+                               Model model) {
+
+        Logger logger = Logger.getLogger(this.getClass().getName());
+
+        if (bindingResult.hasErrors()) {
+            logger.severe("Login form validation failed: " + bindingResult.getAllErrors());
+            return "login";
+        }
+
         // Create an authentication request using the provided username and password
         Authentication authenticationRequest =
                 new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword());
@@ -114,6 +123,8 @@ public class AuthenticationController {
         try {
             // Attempt to authenticate the user using the AuthenticationManager
             Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
+
+            logger.info("Authentication successful for user: " + loginForm.getUsername());
 
             // If authentication is successful, set the authentication in the SecurityContext
             SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
@@ -124,20 +135,25 @@ public class AuthenticationController {
             // Redirect users based on their roles
             if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
                 // Redirect admin users to the admin dashboard
+                logger.info("Redirecting admin user to admin dashboard");
                 return "redirect:/admin/dashboard";
             } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_USER"))) {
                 // Redirect regular users to the user dashboard
+                logger.info("Redirecting regular user to user dashboard");
                 return "redirect:/user/dashboard";
             } else {
                 // If the user has no specific role, redirect to a generic homepage
+                logger.warning("User " + loginForm.getUsername() + " has no specific role, redirecting to home");
                 return "redirect:/home";
             }
         } catch (AuthenticationException e) {
             // If authentication fails, add an error message to the model and return to the login page
+            logger.severe("Authentication failed for user " + loginForm.getUsername() + ": " + e.getMessage());
             model.addAttribute("error", "Invalid username or password");
             return "login";
         }
     }
+
 
 
 
