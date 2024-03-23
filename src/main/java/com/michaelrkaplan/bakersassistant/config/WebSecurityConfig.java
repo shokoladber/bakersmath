@@ -13,17 +13,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
+
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        logger.debug("Creating BCryptPasswordEncoder bean");
         return new BCryptPasswordEncoder();
     }
 
@@ -31,6 +37,7 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(
             BCryptPasswordEncoder bCryptPasswordEncoder,
             List<AuthenticationProvider> authenticationProviders) {
+        logger.debug("Creating AuthenticationManager bean");
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
@@ -42,26 +49,24 @@ public class WebSecurityConfig {
         return new ProviderManager(authenticationProviders);
     }
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        logger.debug("Configuring SecurityFilterChain");
         http
-            .authorizeHttpRequests((authorizeHttpRequests) ->
-                    authorizeHttpRequests
-                            .requestMatchers("/", "/register", "/login")
-                            .permitAll()
-                            .requestMatchers("/user/**")
-                            .hasRole("USER")
-                            .requestMatchers("/admin/**")
-                            .hasRole("ADMIN")
-                            .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                    .loginPage("/login")
-                    .permitAll()
-            );
+                .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
+                                .requestMatchers("/", "/register", "/login")
+                                .permitAll()
+                                .requestMatchers("/user/**")
+                                .hasRole("USER")
+                                .requestMatchers("/admin/**")
+                                .hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                );
         return http.build();
     }
-
 }
-

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.ScriptAssert;
 
-@ScriptAssert(lang = "javascript", script = "_this.password.equals(_this.confirmPassword)", message = "Passwords do not match")
+//@ScriptAssert(lang = "javascript", script = "_this.password.equals(_this.confirmPassword)", message = "Passwords do not match")
 public class RegistrationForm {
 
     @NotBlank(message = "Username is required")
