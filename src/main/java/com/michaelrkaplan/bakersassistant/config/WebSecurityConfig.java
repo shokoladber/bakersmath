@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/", "/register", "/login")
+                                .requestMatchers("/", "/register", "/login", "/authenticate")
                                 .permitAll()
                                 .requestMatchers("/user/**")
                                 .hasRole("USER")
@@ -64,9 +65,13 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .loginPage("/login")
+                        .loginProcessingUrl("/authenticate")
                         .permitAll()
                 );
         return http.build();
     }
 }
+
