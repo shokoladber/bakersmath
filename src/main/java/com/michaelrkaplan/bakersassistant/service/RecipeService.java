@@ -1,25 +1,33 @@
 package com.michaelrkaplan.bakersassistant.service;
 
+import com.michaelrkaplan.bakersassistant.model.CustomUserDetailsImpl;
 import com.michaelrkaplan.bakersassistant.model.Ingredient;
 import com.michaelrkaplan.bakersassistant.model.Recipe;
+import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.RecipeRepository;
+import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class RecipeService {
 
+    private final UserRepository userRepository;
+
     private final RecipeRepository recipeRepository;
 
     private final IngredientService ingredientService;
 
     @Autowired
-    public RecipeService(RecipeRepository recipeRepository, IngredientService ingredientService) {
+    public RecipeService(UserRepository userRepository, RecipeRepository recipeRepository, IngredientService ingredientService) {
+        this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
         this.ingredientService = ingredientService;
     }
@@ -38,15 +46,41 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe createRecipe(@NotNull Recipe recipe) {
+    public Recipe createRecipe(@NotNull Recipe recipe, Principal principal) {
+        // Ensure principal is not null
+        if (principal != null) {
+            // Get the username from the principal
+            String username = principal.getName();
 
-        for (Ingredient ingredient : recipe.getIngredients()) {
-            ingredient.setRecipe(recipe);
+            // Use UserService or UserRepository to find the user by username
+            Optional<User> currentUserOptional = userRepository.findByUsernameIgnoreCase(username);
+
+            // Check if the user exists
+            if (currentUserOptional.isPresent()) {
+                User currentUser = currentUserOptional.get();
+
+                // Associate the recipe with the user
+                recipe.setUser(currentUser);
+
+                // Set the recipe for each ingredient
+                for (Ingredient ingredient : recipe.getIngredients()) {
+                    ingredient.setRecipe(recipe);
+                }
+
+                // Add the recipe to the user's list of recipes
+                currentUser.addRecipe(recipe);
+
+                // Save the recipe to the database
+                return recipeRepository.save(recipe);
+
+            } else {
+                throw new UsernameNotFoundException("User not found with username: " + username);
+            }
+
+        } else {
+            // Handle the case where the principal is null (optional)
+            throw new IllegalStateException("User must be logged in to create a recipe.");
         }
-
-
-
-        return recipeRepository.save(recipe);
     }
 
     @Transactional
@@ -76,9 +110,14 @@ public class RecipeService {
         return recipeRepository.findByName(recipeName);
     }
 
-    public boolean existsRecipeByNameIgnoreCase(String recipeName) {
-        // Use your repository method to check if a recipe with the given name exists
-        return recipeRepository.existsByNameIgnoreCase(recipeName);
+//    public boolean existsRecipeByNameIgnoreCase(String recipeName) {
+//        // Use your repository method to check if a recipe with the given name exists
+//        return recipeRepository.existsByNameIgnoreCase(recipeName);
+//    }
+
+    public boolean existsRecipeByNameIgnoreCaseAndUser(String name, User currentUser) {
+        // Use your repository method to check if a recipe with the given name exists for the current user
+        return recipeRepository.existsByNameIgnoreCaseAndUser(name, currentUser);
     }
 
 }

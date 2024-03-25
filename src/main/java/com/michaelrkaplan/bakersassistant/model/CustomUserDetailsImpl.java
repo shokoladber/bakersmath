@@ -1,8 +1,10 @@
-package com.michaelrkaplan.bakersassistant.service;
+package com.michaelrkaplan.bakersassistant.model;
 
+import com.michaelrkaplan.bakersassistant.model.CustomUserDetails;
 import com.michaelrkaplan.bakersassistant.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CustomUserDetailsImpl implements CustomUserDetails {
@@ -17,6 +19,8 @@ public class CustomUserDetailsImpl implements CustomUserDetails {
     public CustomUserDetailsImpl(User user) {
         this.user = user;
     }
+
+    public List<Recipe> getRecipes() {return user.getRecipes();}
 
     @Override
     public String getPassword() {
@@ -52,4 +56,6 @@ public class CustomUserDetailsImpl implements CustomUserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

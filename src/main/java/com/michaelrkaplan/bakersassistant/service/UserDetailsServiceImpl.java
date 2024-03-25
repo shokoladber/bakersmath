@@ -1,5 +1,6 @@
 package com.michaelrkaplan.bakersassistant.service;
 
+import com.michaelrkaplan.bakersassistant.model.CustomUserDetailsImpl;
 import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import org.apache.catalina.Role;

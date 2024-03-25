@@ -1,4 +1,4 @@
-package com.michaelrkaplan.bakersassistant.service;
+package com.michaelrkaplan.bakersassistant.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
