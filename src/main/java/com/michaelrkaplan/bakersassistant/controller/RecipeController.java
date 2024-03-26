@@ -51,21 +51,29 @@ public class RecipeController {
 
     // Display an individual recipe page
     @GetMapping("/{recipeName}")
-    public String showRecipeDetails(@PathVariable String recipeName, Model model) {
-        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
+    public String showRecipeDetails(@PathVariable String recipeName, Model model, Principal principal) {
+        String username = principal.getName(); // Get the username of the logged-in user
+
+        // Retrieve the recipe by name for the logged-in user
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByNameAndUser(recipeName, username);
+
         if (optionalRecipe.isPresent()) {
             Recipe recipe = optionalRecipe.get();
             model.addAttribute("recipeName", recipe.getName());
             model.addAttribute("ingredients", recipe.getIngredients());
             model.addAttribute("targetUnitType", "grams");
             model.addAttribute("instructions", recipe.getInstructions());
+
+            // Calculate total weight of the recipe
             double totalWeight = calculationService.calculateTotalWeightInGrams(recipe);
             model.addAttribute("totalWeight", totalWeight);
+
+            return "recipes/selected-recipe";
         } else {
             return "redirect:/recipes/index";
         }
-        return "recipes/selected-recipe";
     }
+
 
     @GetMapping("/add")
     public String showAddRecipeForm(Model model, Principal principal) {

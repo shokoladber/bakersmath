@@ -120,4 +120,14 @@ public class RecipeService {
         return recipeRepository.existsByNameIgnoreCaseAndUser(name, currentUser);
     }
 
+    public Optional<Recipe> getRecipeByNameAndUser(String recipeName, String username) {
+        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return recipeRepository.findByNameAndUser(recipeName, user);
+        } else {
+            return Optional.empty();
+        }
+    }
+
 }

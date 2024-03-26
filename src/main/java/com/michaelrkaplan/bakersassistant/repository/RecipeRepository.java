@@ -18,4 +18,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByUserId(Long userId);
 
     boolean existsByNameIgnoreCaseAndUser(String name, User currentUser);
+
+    Optional<Recipe> findByNameAndUser(String recipeName, User user);
 }
