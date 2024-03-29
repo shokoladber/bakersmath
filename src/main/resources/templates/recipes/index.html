@@ -28,7 +28,7 @@
     <!-- Iterate over the list of recipes associated with the logged-in user and display each one -->
     <li th:each="recipe : ${userRecipes}">
         <!-- Assuming 'userRecipes' is the name of the variable in the model containing user-specific recipes -->
-        <a th:href="@{/recipes/{recipeId}(recipeId=${recipe.getId})}" th:text="${recipe.getName}"></a>
+        <a th:href="@{/recipes/{recipeName}(recipeName=${recipe.getName})}" th:text="${recipe.getName}"></a>
     </li>
 </ul>
 
