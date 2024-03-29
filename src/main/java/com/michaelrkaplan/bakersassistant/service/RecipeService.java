@@ -97,23 +97,20 @@ public class RecipeService {
                 .orElse(null); // Handle the case where the recipe with the given id is not found
     }
 
-    public boolean deleteRecipe(Long id) {
+    public boolean deleteRecipe(Long id, String username) {
         // Additional logic, validation, or processing can be added here
-        if (recipeRepository.existsById(id)) {
-            recipeRepository.deleteById(id);
-            return true;
+        Optional<Recipe> optionalRecipe = recipeRepository.findById(id);
+        if (optionalRecipe.isPresent()) {
+            Recipe recipe = optionalRecipe.get();
+            if (recipe.getUser().getUsername().equals(username)) {
+                // Only delete the recipe if it belongs to the logged-in user
+                recipeRepository.delete(recipe);
+                return true;
+            }
         }
         return false;
     }
 
-    public Optional<Recipe> getRecipeByName(String recipeName) {
-        return recipeRepository.findByName(recipeName);
-    }
-
-//    public boolean existsRecipeByNameIgnoreCase(String recipeName) {
-//        // Use your repository method to check if a recipe with the given name exists
-//        return recipeRepository.existsByNameIgnoreCase(recipeName);
-//    }
 
     public boolean existsRecipeByNameIgnoreCaseAndUser(String name, User currentUser) {
         // Use your repository method to check if a recipe with the given name exists for the current user

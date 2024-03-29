@@ -105,8 +105,12 @@ public class RecipeController {
 
 
     @GetMapping("/{recipeName}/delete")
-    public String showDeleteRecipeForm(@PathVariable String recipeName, Model model) {
-        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
+    public String showDeleteRecipeForm(@PathVariable String recipeName,
+                                       Model model,
+                                       Principal principal) {
+        String username = principal.getName();
+
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByNameAndUser(recipeName, username);
 
         if (!optionalRecipe.isPresent()) {
             return "redirect:/recipes/index";
@@ -119,23 +123,31 @@ public class RecipeController {
         return "recipes/delete";
     }
 
+
     @PostMapping("/delete")
     public String submitDeleteRecipeForm(@RequestParam Long recipeId,
-                                         @RequestParam(required = false) String cancel) {
+                                         @RequestParam(required = false) String cancel,
+                                         Principal principal) {
+
+        String username = principal.getName(); // Get the username of the logged-in user
 
         if (cancel != null) {
+            // Redirect to the recipe details page if the user cancels
             return "redirect:/recipes/{recipeName}/";
         }
 
-        boolean isDeleted = recipeService.deleteRecipe(recipeId);
+        // Attempt to delete the recipe associated with the logged-in user
+        boolean isDeleted = recipeService.deleteRecipe(recipeId, username);
 
         if (isDeleted) {
+            // Redirect to the recipe index page after successful deletion
             return "redirect:/recipes/index";
         } else {
-            // Handle the case where the recipe couldn't be deleted
+            // Redirect to the recipe details page if the recipe couldn't be deleted
             return "redirect:/recipes/{recipeName}";
         }
     }
+
 
     @GetMapping("/convert-weight")
     @ResponseBody
@@ -158,17 +170,19 @@ public class RecipeController {
     @GetMapping("/scale")
     @ResponseBody
     public ResponseEntity<Recipe> scaleRecipe(
+            Principal principal,
             @RequestParam("recipeName") String recipeName,
             @RequestParam(value = "batchSizeMultiplier", required = false) Integer batchSizeMultiplier,
             @RequestParam(value = "desiredTotalWeight", required = false) Double desiredTotalWeight,
             @RequestParam(value = "targetUnit", required = false) UnitType targetUnit) {
+        String username = principal.getName();
 
         if ((batchSizeMultiplier == null && (desiredTotalWeight == null || targetUnit == null)) ||
                 (batchSizeMultiplier != null && (desiredTotalWeight != null || targetUnit != null))) {
             return ResponseEntity.badRequest().build();
         }
 
-        Optional<Recipe> optionalRecipe = recipeService.getRecipeByName(recipeName);
+        Optional<Recipe> optionalRecipe = recipeService.getRecipeByNameAndUser(recipeName, username);
 
         if (optionalRecipe.isPresent()) {
             Recipe originalRecipe = optionalRecipe.get();

@@ -14,7 +14,7 @@ public class Recipe {
 
     private String name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
