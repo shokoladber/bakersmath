@@ -175,6 +175,7 @@ public class RecipeController {
             @RequestParam(value = "batchSizeMultiplier", required = false) Integer batchSizeMultiplier,
             @RequestParam(value = "desiredTotalWeight", required = false) Double desiredTotalWeight,
             @RequestParam(value = "targetUnit", required = false) UnitType targetUnit) {
+
         String username = principal.getName();
 
         if ((batchSizeMultiplier == null && (desiredTotalWeight == null || targetUnit == null)) ||
@@ -188,7 +189,7 @@ public class RecipeController {
             Recipe originalRecipe = optionalRecipe.get();
 
             if (batchSizeMultiplier != null) {
-                Recipe scaledRecipe = calculationService.scaleRecipeByBatchSize(originalRecipe, batchSizeMultiplier);
+                Recipe scaledRecipe = calculationService.scaleRecipeByBatchSize(originalRecipe, batchSizeMultiplier, username);
                 return ResponseEntity.ok(scaledRecipe);
             } else {
                 Recipe scaledRecipe = calculationService.scaleRecipeByTotalWeight(originalRecipe, desiredTotalWeight, targetUnit);

@@ -3,16 +3,23 @@ package com.michaelrkaplan.bakersassistant.service;
 import com.michaelrkaplan.bakersassistant.model.Ingredient;
 import com.michaelrkaplan.bakersassistant.model.Recipe;
 import com.michaelrkaplan.bakersassistant.model.UnitType;
+import com.michaelrkaplan.bakersassistant.model.User;
 import com.michaelrkaplan.bakersassistant.repository.RecipeRepository;
+import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public final class CalculationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CalculationService.class);
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private ConversionService conversionService;
@@ -35,7 +42,9 @@ public final class CalculationService {
         return conversionService.convert(totalWeightInGrams, UnitType.grams, targetUnit);
     }
 
-    public Recipe scaleRecipeByBatchSize(Recipe originalRecipe, int batchSizeMultiplier) {
+    public Recipe scaleRecipeByBatchSize(Recipe originalRecipe,
+                                         int batchSizeMultiplier,
+                                         String username) {
         if (batchSizeMultiplier <= 0) {
             throw new IllegalArgumentException("Invalid batch size multiplier for scaling recipe");
         }
@@ -44,8 +53,13 @@ public final class CalculationService {
         Recipe scaledRecipe = new Recipe();
 
         // Set name and instructions of scaledIngredient
-        scaledRecipe.setName(originalRecipe.getName() + " x " + batchSizeMultiplier);
+        scaledRecipe.setName(originalRecipe.getName() + " x" + batchSizeMultiplier);
         scaledRecipe.setInstructions(originalRecipe.getInstructions());
+
+        // Set the user of the scaled recipe
+        Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(username);
+        User user = optionalUser.orElseThrow(() -> new IllegalArgumentException("User not found"));
+        scaledRecipe.setUser(user);
 
         // Scale each ingredient and add to the scaled recipe
         for (Ingredient originalIngredient : originalRecipe.getIngredients()) {
