@@ -1,4 +1,4 @@
-<div th:fragment="navbar">
+<div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">Baker's Math</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -12,6 +12,18 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/recipes/index">Recipes</a>
+                </li>
+                <li class="nav-item">
+                    <!-- Show logout button if principal is present in the model -->
+                    <div th:if="${principal != null}">
+                        <form th:action="@{/user/logout}" method="post">
+                            <button type="submit" class="btn btn-link nav-link">Logout</button>
+                        </form>
+                    </div>
+                    <!-- Show login button if principal is not present in the model -->
+                    <div th:unless="${principal != null}">
+                        <a class="nav-link" href="/login">Login</a>
+                    </div>
                 </li>
             </ul>
         </div>

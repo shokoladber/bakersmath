@@ -1,14 +1,16 @@
 package com.michaelrkaplan.bakersassistant.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 @RequestMapping("/user")
 public class UserController {
 
@@ -25,6 +27,15 @@ public class UserController {
         // and pass it to the template
 
         return "user/dashboard";
+    }
+
+    @GetMapping("/logout")
+    public RedirectView logout() {
+        // Invalidate current session and clear security context
+        SecurityContextHolder.getContext().setAuthentication(null);
+
+        // Redirect to the login page or any other desired page
+        return new RedirectView("/login?logout");
     }
 
 }

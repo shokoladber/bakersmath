@@ -15,7 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.util.List;
 

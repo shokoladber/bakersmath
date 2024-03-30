@@ -45,6 +45,7 @@ public class RecipeController {
         User currentUser = currentUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
         List<Recipe> userRecipes = currentUser.getRecipes();
         model.addAttribute("userRecipes", userRecipes);
+        model.addAttribute("principal", principal);
         return "recipes/index";
     }
 
@@ -63,6 +64,7 @@ public class RecipeController {
             model.addAttribute("ingredients", recipe.getIngredients());
             model.addAttribute("targetUnitType", "grams");
             model.addAttribute("instructions", recipe.getInstructions());
+            model.addAttribute("principal", principal);
 
             // Calculate total weight of the recipe
             double totalWeight = calculationService.calculateTotalWeightInGrams(recipe);
