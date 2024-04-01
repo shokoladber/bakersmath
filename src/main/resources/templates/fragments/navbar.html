@@ -16,7 +16,7 @@
                 <li class="nav-item">
                     <!-- Show logout button if principal is present in the model -->
                     <div th:if="${principal != null}">
-                        <form th:action="@{/user/logout}" method="post">
+                        <form th:action="@{/logout}" method="post">
                             <button type="submit" class="btn btn-link nav-link">Logout</button>
                         </form>
                     </div>

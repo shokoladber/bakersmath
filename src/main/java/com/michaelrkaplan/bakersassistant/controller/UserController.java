@@ -29,13 +29,5 @@ public class UserController {
         return "user/dashboard";
     }
 
-    @GetMapping("/logout")
-    public RedirectView logout() {
-        // Invalidate current session and clear security context
-        SecurityContextHolder.getContext().setAuthentication(null);
-
-        // Redirect to the login page or any other desired page
-        return new RedirectView("/login?logout");
-    }
 
 }

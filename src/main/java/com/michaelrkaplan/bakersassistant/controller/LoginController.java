@@ -31,7 +31,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public String processLogin(@ModelAttribute LoginForm loginForm,
                                BindingResult bindingResult,
                                Model model) {
@@ -55,6 +55,15 @@ public class LoginController {
 
         // Additional actions after successful authentication, such as redirecting
         return "redirect:/home"; // Redirect to home page after successful login
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        // Clear the authentication from the SecurityContext
+        SecurityContextHolder.clearContext();
+
+        // Redirect to the login page or any other page after logout
+        return "redirect:/login?logout";
     }
 
 
