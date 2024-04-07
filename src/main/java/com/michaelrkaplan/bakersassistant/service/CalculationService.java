@@ -42,6 +42,23 @@ public final class CalculationService {
         return conversionService.convert(totalWeightInGrams, UnitType.grams, targetUnit);
     }
 
+    public Recipe scaleRecipe(Recipe originalRecipe, ScalingMethod scalingMethod, Object... args) {
+        switch (scalingMethod) {
+            case BY_BATCH_SIZE:
+                if (args.length < 2 || !(args[0] instanceof Integer) || !(args[1] instanceof String)) {
+                    throw new IllegalArgumentException("Invalid arguments for scaling by batch size");
+                }
+                return scaleRecipeByBatchSize(originalRecipe, (int) args[0], (String) args[1]);
+            case BY_TOTAL_WEIGHT:
+                if (args.length < 2 || !(args[0] instanceof Double) || !(args[1] instanceof UnitType)) {
+                    throw new IllegalArgumentException("Invalid arguments for scaling by total weight");
+                }
+                return scaleRecipeByTotalWeight(originalRecipe, (double) args[0], (UnitType) args[1]);
+            default:
+                throw new IllegalArgumentException("Unsupported scaling method");
+        }
+    }
+
     public Recipe scaleRecipeByBatchSize(Recipe originalRecipe,
                                          int batchSizeMultiplier,
                                          String username) {

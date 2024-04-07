@@ -2,9 +2,7 @@ package com.michaelrkaplan.bakersassistant.controller;
 
 import com.michaelrkaplan.bakersassistant.model.*;
 import com.michaelrkaplan.bakersassistant.repository.UserRepository;
-import com.michaelrkaplan.bakersassistant.service.CalculationService;
-import com.michaelrkaplan.bakersassistant.service.ConversionService;
-import com.michaelrkaplan.bakersassistant.service.UserDetailsServiceImpl;
+import com.michaelrkaplan.bakersassistant.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.michaelrkaplan.bakersassistant.service.RecipeService;
 
 import java.security.Principal;
 import java.util.*;
@@ -174,33 +171,23 @@ public class RecipeController {
     public ResponseEntity<Recipe> scaleRecipe(
             Principal principal,
             @RequestParam("recipeName") String recipeName,
-            @RequestParam(value = "batchSizeMultiplier", required = false) Integer batchSizeMultiplier,
-            @RequestParam(value = "desiredTotalWeight", required = false) Double desiredTotalWeight,
-            @RequestParam(value = "targetUnit", required = false) UnitType targetUnit) {
+            @RequestParam("scalingMethod") ScalingMethod scalingMethod,
+            @RequestParam("args") Object[] args) {
 
         String username = principal.getName();
-
-        if ((batchSizeMultiplier == null && (desiredTotalWeight == null || targetUnit == null)) ||
-                (batchSizeMultiplier != null && (desiredTotalWeight != null || targetUnit != null))) {
-            return ResponseEntity.badRequest().build();
-        }
-
         Optional<Recipe> optionalRecipe = recipeService.getRecipeByNameAndUser(recipeName, username);
 
-        if (optionalRecipe.isPresent()) {
-            Recipe originalRecipe = optionalRecipe.get();
-
-            if (batchSizeMultiplier != null) {
-                Recipe scaledRecipe = calculationService.scaleRecipeByBatchSize(originalRecipe, batchSizeMultiplier, username);
-                return ResponseEntity.ok(scaledRecipe);
-            } else {
-                Recipe scaledRecipe = calculationService.scaleRecipeByTotalWeight(originalRecipe, desiredTotalWeight, targetUnit);
-                return ResponseEntity.ok(scaledRecipe);
-            }
-        } else {
-            // If the recipe with the given name is not found, you might want to return a 404 Not Found response.
+        if (!optionalRecipe.isPresent()) {
+            // If the recipe with the given name is not found, return a 404 Not Found response.
             return ResponseEntity.notFound().build();
         }
+
+        Recipe originalRecipe = optionalRecipe.get();
+        Object[] methodArgs = Arrays.copyOfRange(args, 1, args.length); // Exclude the first element (scaling method)
+
+        Recipe scaledRecipe = calculationService.scaleRecipe(originalRecipe, scalingMethod, methodArgs);
+        return ResponseEntity.ok(scaledRecipe);
     }
+
 
 }
