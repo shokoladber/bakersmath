@@ -67,7 +67,8 @@ public class WebSecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .loginPage("/login")
-                        .loginProcessingUrl("/authenticate")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/login")
                         .permitAll()
                 );
         return http.build();

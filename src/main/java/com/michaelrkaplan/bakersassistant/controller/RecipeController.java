@@ -62,6 +62,7 @@ public class RecipeController {
             model.addAttribute("targetUnitType", "grams");
             model.addAttribute("instructions", recipe.getInstructions());
             model.addAttribute("principal", principal);
+            model.addAttribute("username", username);
 
             // Calculate total weight of the recipe
             double totalWeight = calculationService.calculateTotalWeightInGrams(recipe);
@@ -183,7 +184,7 @@ public class RecipeController {
         }
 
         Recipe originalRecipe = optionalRecipe.get();
-        Object[] methodArgs = Arrays.copyOfRange(args, 1, args.length); // Exclude the first element (scaling method)
+        Object[] methodArgs = Arrays.copyOfRange(args, 0, args.length);
 
         Recipe scaledRecipe = calculationService.scaleRecipe(originalRecipe, scalingMethod, methodArgs);
         return ResponseEntity.ok(scaledRecipe);
