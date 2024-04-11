@@ -45,10 +45,18 @@ public final class CalculationService {
     public Recipe scaleRecipe(Recipe originalRecipe, ScalingMethod scalingMethod, Object... args) {
         switch (scalingMethod) {
             case BY_BATCH_SIZE:
-                if (args.length < 2 || !(args[0] instanceof Integer) || !(args[1] instanceof String)) {
+                if (args.length < 2) {
+                    throw new IllegalArgumentException("Insufficient arguments for scaling by batch size");
+                }
+                Integer batchSizeMultiplier;
+                String username;
+                try {
+                    batchSizeMultiplier = Integer.parseInt(args[0].toString().replaceAll("\\D+", "")); // Remove non-digit characters
+                    username = args[1].toString().replaceAll("[^a-zA-Z ]", ""); // Remove non-alphabetic characters
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     throw new IllegalArgumentException("Invalid arguments for scaling by batch size");
                 }
-                return scaleRecipeByBatchSize(originalRecipe, (int) args[0], (String) args[1]);
+                return scaleRecipeByBatchSize(originalRecipe, batchSizeMultiplier, username);
             case BY_TOTAL_WEIGHT:
                 if (args.length < 2 || !(args[0] instanceof Double) || !(args[1] instanceof UnitType)) {
                     throw new IllegalArgumentException("Invalid arguments for scaling by total weight");
@@ -58,6 +66,9 @@ public final class CalculationService {
                 throw new IllegalArgumentException("Unsupported scaling method");
         }
     }
+
+
+
 
     public Recipe scaleRecipeByBatchSize(Recipe originalRecipe,
                                          int batchSizeMultiplier,
