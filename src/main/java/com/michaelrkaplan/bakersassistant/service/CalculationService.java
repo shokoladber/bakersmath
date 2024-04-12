@@ -80,6 +80,12 @@ public final class CalculationService {
         // Create a new recipe to store scaled ingredients
         Recipe scaledRecipe = new Recipe();
 
+        // Check if a recipe with the same name already exists
+        boolean recipeExists = recipeRepository.existsByNameIgnoreCase(originalRecipe.getName() + " x" + batchSizeMultiplier);
+        if (recipeExists) {
+            throw new IllegalArgumentException("Recipe with the same name already exists");
+        }
+
         // Set name and instructions of scaledIngredient
         scaledRecipe.setName(originalRecipe.getName() + " x" + batchSizeMultiplier);
         scaledRecipe.setInstructions(originalRecipe.getInstructions());
