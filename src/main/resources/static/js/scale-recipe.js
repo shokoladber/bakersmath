@@ -12,7 +12,7 @@ function scaleRecipe(username) {
     // Construct the args array based on the scaling method and value
     let args = [];
     if (scalingMethod === 'BY_BATCH_SIZE') {
-        args.push(parseInt(scalingValue)); // Convert scalingValue to integer
+        args.push(parseFloat(scalingValue)); // Convert scalingValue to float
         args.push(username); // Add username
     } else if (scalingMethod === 'BY_TOTAL_WEIGHT') {
         args.push(parseFloat(scalingValue)); // Convert scalingValue to float
@@ -38,7 +38,6 @@ function scaleRecipe(username) {
         })
         .then(data => {
             console.log(data);
-            // Handle the scaled recipe data
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);

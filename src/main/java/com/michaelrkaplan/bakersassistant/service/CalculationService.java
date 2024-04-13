@@ -48,10 +48,10 @@ public final class CalculationService {
                 if (args.length < 2) {
                     throw new IllegalArgumentException("Insufficient arguments for scaling by batch size");
                 }
-                Integer batchSizeMultiplier;
+                Double batchSizeMultiplier;
                 String username;
                 try {
-                    batchSizeMultiplier = Integer.parseInt(args[0].toString().replaceAll("\\D+", "")); // Remove non-digit characters
+                    batchSizeMultiplier = Double.parseDouble(args[0].toString().replaceAll("[^0-9.]", ""));
                     username = args[1].toString().replaceAll("[^a-zA-Z ]", ""); // Remove non-alphabetic characters
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                     throw new IllegalArgumentException("Invalid arguments for scaling by batch size");
@@ -71,7 +71,7 @@ public final class CalculationService {
 
 
     public Recipe scaleRecipeByBatchSize(Recipe originalRecipe,
-                                         int batchSizeMultiplier,
+                                         double batchSizeMultiplier,
                                          String username) {
         if (batchSizeMultiplier <= 0) {
             throw new IllegalArgumentException("Invalid batch size multiplier for scaling recipe");
@@ -151,7 +151,7 @@ public final class CalculationService {
         return scaledRecipe;
     }
 
-    private Ingredient scaleIngredientByBatchSize(Ingredient originalIngredient, int batchSizeMultiplier) {
+    private Ingredient scaleIngredientByBatchSize(Ingredient originalIngredient, double batchSizeMultiplier) {
         // Create a new ingredient to store scaled details
         Ingredient scaledIngredient = new Ingredient();
 
