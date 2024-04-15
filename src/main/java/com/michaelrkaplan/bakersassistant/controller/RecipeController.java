@@ -5,11 +5,11 @@ import com.michaelrkaplan.bakersassistant.repository.UserRepository;
 import com.michaelrkaplan.bakersassistant.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.*;
@@ -168,8 +168,7 @@ public class RecipeController {
     }
 
     @GetMapping("/scale")
-    @ResponseBody
-    public ResponseEntity<Recipe> scaleRecipe(
+    public String scaleRecipe(
             Principal principal,
             @RequestParam("recipeName") String recipeName,
             @RequestParam("scalingMethod") ScalingMethod scalingMethod,
@@ -178,17 +177,18 @@ public class RecipeController {
         String username = principal.getName();
         Optional<Recipe> optionalRecipe = recipeService.getRecipeByNameAndUser(recipeName, username);
 
-        if (!optionalRecipe.isPresent()) {
-            // If the recipe with the given name is not found, return a 404 Not Found response.
-            return ResponseEntity.notFound().build();
+        if (optionalRecipe.isEmpty()) {
+            return "redirect:/recipes/{recipeName}";
         }
 
         Recipe originalRecipe = optionalRecipe.get();
         Object[] methodArgs = Arrays.copyOfRange(args, 0, args.length);
-
         Recipe scaledRecipe = calculationService.scaleRecipe(originalRecipe, scalingMethod, methodArgs);
-        return ResponseEntity.ok(scaledRecipe);
+        return "redirect:/recipes/index";
     }
+
+
+
 
 
 }

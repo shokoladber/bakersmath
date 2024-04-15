@@ -50,6 +50,7 @@
 
 <ul>
     <li th:each="ingredient : ${ingredients}">
+
         <span th:text="${ingredient.name}"></span>
         <span class="ingredient-quantity" th:text="${ingredient.quantity}"></span>
         <!-- Hidden field to store the current unit type -->
@@ -59,7 +60,7 @@
             <option th:each="unit : ${T(com.michaelrkaplan.bakersassistant.model.UnitType).values()}"
                     th:value="${unit.name}"
                     th:text="${unit.name}"
-                    th:selected="${unit.name == ingredient.unit}">
+                    th:selected="${unit.name == ingredient.unit.name}">
             </option>
         </select>
     </li>
