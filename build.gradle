@@ -1,60 +1,9 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.0'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'base'
 }
 
-group = 'com.michaelrkaplan'
-version = '0.0.1-SNAPSHOT'
-
-java {
-	sourceCompatibility = '17'
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
-
-repositories {
-	mavenCentral()
-}
-
-sourceSets {
-	main {
-		resources {
-			srcDirs = ["src/main/resources"]
-		}
-	}
-}
-
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:3.2.0'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-logging'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.jetbrains:annotations:20.1.0'
-	implementation 'org.webjars:bootstrap:5.3.2'
-	implementation 'org.webjars:jquery:3.6.0'
-	implementation 'org.webjars.npm:popperjs__core:2.11.6'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-springBoot {
-	mainClass = 'com.michaelrkaplan.bakersassistant'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-// Output the resources directory for debugging purposes
-task showResourcesDir {
-	doLast {
-		// Verify that the output directory is correct
-		println "Output directory for resources: ${sourceSets.main.output.resourcesDir}"
-	}
-}
-
-// Run the showResourcesDir task before the build
-build.dependsOn showResourcesDir

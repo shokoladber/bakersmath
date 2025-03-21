@@ -1,1 +1,3 @@
-rootProject.name = 'bakers-assistant'
+rootProject.name = 'bakersmath'
+include('backend')
+
