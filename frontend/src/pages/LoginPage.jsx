@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -64,6 +65,12 @@ function LoginPage() {
             </div>
           </div>
         </form>
+
+        <div className="has-text-centered mt-4">
+          <p>
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
+        </div>
       </div>
     </section>
   );
