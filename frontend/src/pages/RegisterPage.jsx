@@ -1,47 +1,54 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirmPassword: ''
   });
 
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
+    setSuccessMessage('');
 
-    const { username, email, password, confirmPassword } = formData;
-
-    // Simple validation
-    if (!username || !email || !password || !confirmPassword) {
-      setError('All fields are required');
+    if (formData.password !== formData.confirmPassword) {
+      setErrors({ confirmPassword: "Passwords do not match" });
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setErrors(data); // Display validation errors from backend
+      } else {
+        setSuccessMessage('Registration successful! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 2000);
+      }
+    } catch (error) {
+      setErrors({ server: 'An error occurred. Please try again.' });
     }
-
-    // Perform registration logic here (e.g., API call)
-    console.log('Register:', formData);
-
-    // Clear form
-    setFormData({
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    });
-    setError('');
   };
 
   return (
@@ -56,11 +63,13 @@ function RegisterPage() {
                 className="input"
                 type="text"
                 name="username"
-                placeholder="Enter your username"
+                placeholder="Enter username"
                 value={formData.username}
                 onChange={handleChange}
+                required
               />
             </div>
+            {errors.username && <p className="help is-danger">{errors.username}</p>}
           </div>
 
           <div className="field">
@@ -70,11 +79,13 @@ function RegisterPage() {
                 className="input"
                 type="email"
                 name="email"
-                placeholder="Enter your email"
+                placeholder="Enter email"
                 value={formData.email}
                 onChange={handleChange}
+                required
               />
             </div>
+            {errors.email && <p className="help is-danger">{errors.email}</p>}
           </div>
 
           <div className="field">
@@ -84,9 +95,10 @@ function RegisterPage() {
                 className="input"
                 type="password"
                 name="password"
-                placeholder="Enter your password"
+                placeholder="Enter password"
                 value={formData.password}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -98,14 +110,17 @@ function RegisterPage() {
                 className="input"
                 type="password"
                 name="confirmPassword"
-                placeholder="Confirm your password"
+                placeholder="Confirm password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
+                required
               />
             </div>
+            {errors.confirmPassword && <p className="help is-danger">{errors.confirmPassword}</p>}
           </div>
 
-          {error && <div className="notification is-danger">{error}</div>}
+          {errors.server && <p className="notification is-danger">{errors.server}</p>}
+          {successMessage && <p className="notification is-success">{successMessage}</p>}
 
           <div className="field">
             <div className="control">
@@ -116,11 +131,9 @@ function RegisterPage() {
           </div>
         </form>
 
-        <div className="has-text-centered mt-4">
-          <p>
-            Already have an account? <Link to="/login">Login here</Link>
-          </p>
-        </div>
+        <p className="mt-3">
+          Already have an account? <a href="/login">Login here</a>
+        </p>
       </div>
     </section>
   );

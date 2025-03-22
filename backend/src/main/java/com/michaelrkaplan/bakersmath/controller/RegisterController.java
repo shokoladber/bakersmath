@@ -4,14 +4,17 @@ import com.michaelrkaplan.bakersmath.dto.RegistrationForm;
 import com.michaelrkaplan.bakersmath.repository.UserRepository;
 import com.michaelrkaplan.bakersmath.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:5173") // Allow requests from React frontend
 public class RegisterController {
 
     @Autowired
@@ -20,17 +23,8 @@ public class RegisterController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("registrationForm", new RegistrationForm());
-        return "register";
-    }
-
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute RegistrationForm registrationForm,
-                               Model model,
-                               Errors errors) {
-
+    public ResponseEntity<?> registerUser(@RequestBody RegistrationForm registrationForm, Errors errors) {
         String username = registrationForm.getUsername();
         String email = registrationForm.getEmail();
         String password = registrationForm.getPassword();
@@ -38,21 +32,18 @@ public class RegisterController {
         // Convert email to lowercase for case-insensitive comparison
         String normalizedEmail = email.toLowerCase();
 
-        // Validate email uniqueness
+        // Validate email and username uniqueness
         validateEmailUniqueness(errors, normalizedEmail);
-
-        // Validate username uniqueness
         validateUsernameUniqueness(errors, username);
 
         // Check for validation errors
         if (errors.hasErrors()) {
-            model.addAttribute("errors", errors);
-            return "register";
+            return ResponseEntity.badRequest().body(getValidationErrors(errors));
         }
 
         userService.registerUser(username, password, email);
 
-        return "redirect:/login";
+        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
     }
 
     private void validateEmailUniqueness(Errors errors, String normalizedEmail) {
@@ -67,4 +58,11 @@ public class RegisterController {
         }
     }
 
+    private Map<String, String> getValidationErrors(Errors errors) {
+        Map<String, String> errorMap = new HashMap<>();
+        for (FieldError error : errors.getFieldErrors()) {
+            errorMap.put(error.getField(), error.getDefaultMessage());
+        }
+        return errorMap;
+    }
 }

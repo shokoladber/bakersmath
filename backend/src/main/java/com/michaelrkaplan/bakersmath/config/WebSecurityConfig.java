@@ -12,9 +12,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -42,25 +46,31 @@ public class WebSecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
 
-        // Ensure DaoAuthenticationProvider is the last provider in the list
         authenticationProviders.add(daoAuthenticationProvider);
 
-        // Create ProviderManager with the configured authentication providers
         return new ProviderManager(authenticationProviders);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         logger.debug("Configuring SecurityFilterChain");
+
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:5173")); // Frontend origin
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for API requests
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers("/", "/register", "/login")
-                                .permitAll()
-                                .requestMatchers("/user/**")
-                                .hasRole("USER")
-                                .requestMatchers("/admin/**")
-                                .hasRole("ADMIN")
+                                .requestMatchers("/", "/register", "/login", "/api/auth/**").permitAll()
+                                .requestMatchers("/user/**").hasRole("USER")
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -68,10 +78,10 @@ public class WebSecurityConfig {
                         .passwordParameter("password")
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/login")
+                        .defaultSuccessUrl("/dashboard", true) // Redirect users to dashboard after login
                         .permitAll()
                 );
+
         return http.build();
     }
 }
-
